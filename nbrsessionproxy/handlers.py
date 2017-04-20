@@ -25,33 +25,7 @@ def random_port():
 state_data = dict()
 
 class RSessionContext(Configurable):
-
-    # rsession's environment will vary depending on how it was compiled.
-    # Configure the env and cmd as required; values here work on Ubuntu.
-
-    paths = Dict({
-        'PATH':'/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/bin',
-        'LD_LIBRARY_PATH':'/usr/lib/R/lib:/lib:/usr/lib/x86_64-linux-gnu:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/server:/opt/conda/lib/R/lib'
-    }, help="Executable and dynamic linker paths required by rsession.")
-
-    env = Dict({
-        'R_DOC_DIR':'/usr/share/R/doc', 
-        'R_HOME':'/usr/lib/R', 
-        'R_INCLUDE_DIR':'/usr/share/R/include', 
-        'R_SHARE_DIR':'/usr/share/R/share', 
-        'RSTUDIO_DEFAULT_R_VERSION':'3.3.0', 
-        'RSTUDIO_DEFAULT_R_VERSION_HOME':'/usr/lib/R', 
-        'RSTUDIO_LIMIT_RPC_CLIENT_UID':'998', 
-        'RSTUDIO_MINIMUM_USER_ID':'500', 
-    }, help="R and RStudio environment variables required by rsession.")
-
-    cmd = List([
-        '/usr/lib/rstudio/bin/rsession',
-        '--standalone=1',
-        '--program-mode=server',
-        '--log-stderr=1',
-        '--session-timeout-minutes=0',
-    ], help="rsession command. Augmented with user-identity and www-port")
+    cmd = List(['rserver'], help="rserver command. Augmented with www-port")
 
 class RSessionProxyHandler(IPythonHandler):
     '''Manage an RStudio rsession instance.'''
@@ -161,23 +135,11 @@ class RSessionProxyHandler(IPythonHandler):
         self.log.debug('No existing process')
         port = random_port()
 
-        username = os.environ.get('JPY_USER', default='jovyan')
-
         cmd = self.rsession_context.cmd + [
-            '--user-identity=' + username,
             '--www-port=' + str(port)
         ]
 
         server_env = os.environ.copy()
-
-        # Seed RStudio's R and RSTUDIO env variables
-        server_env.update(self.rsession_context.env)
-
-        # Prepend RStudio's requisite paths
-        for env_var in self.rsession_context.paths.keys():
-            path = server_env.get(env_var, '')
-            if path != '': path = ':' + path
-            server_env[env_var] = self.rsession_context.paths[env_var] + path
 
         # Runs rsession in background
         proc = sp.Popen(cmd, env=server_env)
