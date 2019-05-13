@@ -18,9 +18,13 @@ Note that rstudio server is needed to work with this extension.
 
 ### Install jupyter-rsession-proxy
 
-Install the library:
+Install the library via `pip`:
 ```
 pip install jupyter-rsession-proxy
+```
+Or via `conda`:
+```
+conda install -c conda-forge jupyter-rsession-proxy
 ```
 
 The Dockerfile contains an example installation on top of [jupyter/r-notebook](https://github.com/jupyter/docker-stacks/tree/master/r-notebook).
