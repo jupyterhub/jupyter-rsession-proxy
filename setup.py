@@ -14,6 +14,7 @@ setuptools.setup(
     ],
     entry_points={
         'jupyter_serverproxy_servers': [
+            'rserver = jupyter_rsession_proxy:setup_rserver',
             'rstudio = jupyter_rsession_proxy:setup_rstudio'
         ]
     },
