@@ -14,11 +14,11 @@ def get_rstudio_executable(prog):
     if shutil.which(prog):
         return prog
 
-	for op in other_paths:
-		if os.path.exists(op):
-			return op
+    for op in other_paths:
+        if os.path.exists(op):
+            return op
 
-	raise FileNotFoundError(f'Could not find {prog} in PATH')
+    raise FileNotFoundError(f'Could not find {prog} in PATH')
 
 def setup_rserver():
     def _get_env(port):
