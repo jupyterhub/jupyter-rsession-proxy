@@ -20,6 +20,11 @@ def get_rstudio_executable(prog):
 
     raise FileNotFoundError(f'Could not find {prog} in PATH')
 
+def get_icon_path():
+    return os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), 'icons', 'rstudio.svg'
+    )
+
 def setup_rserver():
     def _get_env(port):
         return dict(USER=getpass.getuser())
@@ -34,8 +39,8 @@ def setup_rserver():
         'command': _get_cmd,
         'environment': _get_env,
         'launcher_entry': {
-            'title': 'RStudio Server',
-            'icon_path': os.path.join(os.path.dirname(os.path.abspath(__file__)), 'icons', 'rstudio.svg')
+            'title': 'RStudio',
+            'icon_path': get_icon_path()
         }
     }
 
@@ -75,9 +80,6 @@ def setup_rsession():
         'environment': _get_env,
         'launcher_entry': {
             'title': 'RStudio',
-            'icon_path': os.path.join(os.path.dirname(os.path.abspath(__file__)), 'icons', 'rstudio.svg')
+            'icon_path': get_icon_path()
         }
     }
-
-def setup_rstudio():
-    return setup_rsession()
