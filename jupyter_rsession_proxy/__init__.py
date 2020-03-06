@@ -3,8 +3,49 @@ import subprocess
 import getpass
 import shutil
 
-def setup_rstudio():
-    def _get_rsession_env(port):
+def get_rstudio_executable(prog):
+    # Find prog in known locations
+    other_paths = [
+        # When rstudio-server deb is installed
+        os.path.join('/usr/lib/rstudio-server/bin', prog),
+        # When just rstudio deb is installed
+        os.path.join('/usr/lib/rstudio/bin', prog),
+    ]
+    if shutil.which(prog):
+        return prog
+
+    for op in other_paths:
+        if os.path.exists(op):
+            return op
+
+    raise FileNotFoundError(f'Could not find {prog} in PATH')
+
+def get_icon_path():
+    return os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), 'icons', 'rstudio.svg'
+    )
+
+def setup_rserver():
+    def _get_env(port):
+        return dict(USER=getpass.getuser())
+
+    def _get_cmd(port):
+        return [
+            get_rstudio_executable('rserver'),
+            '--www-port=' + str(port)
+        ]
+
+    return {
+        'command': _get_cmd,
+        'environment': _get_env,
+        'launcher_entry': {
+            'title': 'RStudio',
+            'icon_path': get_icon_path()
+        }
+    }
+
+def setup_rsession():
+    def _get_env(port):
         # Detect various environment variables rsession requires to run
         # Via rstudio's src/cpp/core/r_util/REnvironmentPosix.cpp
         cmd = ['R', '--slave', '--vanilla', '-e',
@@ -23,26 +64,9 @@ def setup_rstudio():
             'RSTUDIO_DEFAULT_R_VERSION': version,
         }
 
-    def _get_rsession_cmd(port):
-        # Other paths rsession maybe in
-        other_paths = [
-            # When rstudio-server deb is installed
-            '/usr/lib/rstudio-server/bin/rsession',
-            # When just rstudio deb is installed
-            '/usr/lib/rstudio/bin/rsession',
-        ]
-        if shutil.which('rsession'):
-            executable = 'rsession'
-        else:
-            for op in other_paths:
-                if os.path.exists(op):
-                    executable = op
-                    break
-            else:
-                raise FileNotFoundError('Can not find rsession in PATH')
-
+    def _get_cmd(port):
         return [
-            executable,
+            get_rstudio_executable('rsession'),
             '--standalone=1',
             '--program-mode=server',
             '--log-stderr=1',
@@ -52,10 +76,10 @@ def setup_rstudio():
         ]
 
     return {
-        'command': _get_rsession_cmd,
-        'environment': _get_rsession_env,
+        'command': _get_cmd,
+        'environment': _get_env,
         'launcher_entry': {
             'title': 'RStudio',
-            'icon_path': os.path.join(os.path.dirname(os.path.abspath(__file__)), 'icons', 'rstudio.svg')
+            'icon_path': get_icon_path()
         }
     }
