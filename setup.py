@@ -7,8 +7,8 @@ setuptools.setup(
     author="Ryan Lovett & Yuvi Panda",
     description="Jupyter extension to proxy RStudio",
     packages=setuptools.find_packages(),
-	keywords=['Jupyter'],
-	classifiers=[
+    keywords=['Jupyter'],
+    classifiers=[
         'Framework :: Jupyter',
         'Programming Language :: Python :: 3'
     ],
