@@ -1,11 +1,11 @@
 import setuptools
 
 setuptools.setup(
-    name="jupyter-rsession-proxy",
-    version='1.1',
-    url="https://github.com/jupyterhub/jupyter-rsession-proxy",
-    author="Ryan Lovett & Yuvi Panda",
-    description="Jupyter extension to proxy RStudio",
+    name='jupyter-rsession-proxy',
+    version='1.2',
+    url='https://github.com/jupyterhub/jupyter-rsession-proxy',
+    author='Ryan Lovett & Yuvi Panda & Kirill Makhonin',
+    description='Jupyter extension to proxy RStudio',
     packages=setuptools.find_packages(),
     keywords=['Jupyter'],
     classifiers=[
