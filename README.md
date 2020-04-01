@@ -1,6 +1,9 @@
 # jupyter-rsession-proxy
 
-**jupyter-rsession-proxy** provides Jupyter server and notebook extensions to proxy RStudio.
+[![PyPI](https://img.shields.io/pypi/v/jupyter-rsession-proxy?label=PyPI%20Version)](https://pypi.org/project/jupyter-rsession-proxy/)
+[![PyPI - Wheel](https://img.shields.io/pypi/wheel/jupyter-rsession-proxy)](https://pypi.org/project/jupyter-rsession-proxy/)
+
+**jupyter-rsession-proxy** provides Jupyter server and notebook extensions to proxy RStudio Server (multi-user env.) or RStudio Session (single-user env.).
 
 ![Screenshot](screenshot.png)
 
@@ -24,6 +27,20 @@ Install the library:
 ```
 pip install jupyter-rsession-proxy
 ```
+
+## Configuring using environment variables
+
+This extension can be configured using environment variables. 
+Below is a list with all supported environment variables.
+
+| Environment variable  | Description |
+| --------------------- |-------------| 
+| RSTUDIO_RSERVER_BIN   | Prioritized location for searching binary file "rserver". Should be an absolute path to rserver or not set. | 
+| RSTUDIO_RSERVER_ARGS  | Overrides all arguments (except --www-port) for "rserver" binary. | 
+| RSTUDIO_RSESSION_BIN  | Prioritized location for searching binary file "rsession". Should be an absolute path to rserver or not set. |
+| RSTUDIO_RSESSION_ARGS | Overrides all arguments (except --www-port and --user-identity) for "rsession" binary. |
+| RSTUDIO_FOLDER        | Prioritized folder for searching all RStudio related binary files. Should be an absolute path to folder or not set. |
+
 
 ## Example
 
