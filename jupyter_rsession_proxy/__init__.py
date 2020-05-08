@@ -32,7 +32,8 @@ def setup_rserver():
     def _get_cmd(port):
         return [
             get_rstudio_executable('rserver'),
-            '--www-port=' + str(port)
+            '--www-port=' + str(port),
+            '--www-frame-origin=same'
         ]
 
     return {
