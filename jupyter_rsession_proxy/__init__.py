@@ -3,6 +3,8 @@ import subprocess
 import getpass
 import shutil
 
+from tempfile import NamedTemporaryFile
+
 def get_rstudio_executable(prog):
     # Find prog in known locations
     other_paths = [
@@ -30,10 +32,12 @@ def setup_rserver():
         return dict(USER=getpass.getuser())
 
     def _get_cmd(port):
+        ntf = NamedTemporaryFile(prefix='/tmp/')
         return [
             get_rstudio_executable('rserver'),
             '--www-port=' + str(port),
-            '--www-frame-origin=same'
+            '--www-frame-origin=same',
+            '--secure-cookie-key-file=' + ntf.name
         ]
 
     return {
