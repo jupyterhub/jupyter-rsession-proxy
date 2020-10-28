@@ -1,5 +1,7 @@
 # jupyter-rsession-proxy
 
+[![TravisCI build status](https://img.shields.io/travis/com/jupyterhub/jupyter-rsession-proxy?logo=travis)](https://travis-ci.com/jupyterhub/jupyter-rsession-proxy)
+
 **jupyter-rsession-proxy** provides Jupyter server and notebook extensions to proxy RStudio.
 
 ![Screenshot](screenshot.png)
