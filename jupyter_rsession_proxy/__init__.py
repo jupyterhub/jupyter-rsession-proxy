@@ -1,7 +1,8 @@
-import os
-import subprocess
 import getpass
+import os
+import pathlib
 import shutil
+import subprocess
 
 def get_rstudio_executable(prog):
     # Find prog in known locations
