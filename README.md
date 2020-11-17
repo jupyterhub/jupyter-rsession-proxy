@@ -27,6 +27,10 @@ Install the library:
 pip install jupyter-rsession-proxy
 ```
 
+### Specify root path
+
+If you want to use RStudio 1.4.x, you need to set the `RSESSION_PROXY_WWW_ROOT_PATH` environment variable which is passed to rserver as the value of `--www-root-path`. You should set this to `/rstudio/`.
+
 ## Example
 
 [rocker/binder](https://hub.docker.com/r/rocker/binder) contains an example installation which you can run on binder.
