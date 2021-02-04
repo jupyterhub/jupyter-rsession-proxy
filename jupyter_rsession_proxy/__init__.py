@@ -33,14 +33,22 @@ def setup_rserver():
         return dict(USER=getpass.getuser())
 
     def db_config():
-        '''Create a temporary directory to hold rserver's database.'''
-        db_dir = tempfile.TemporaryDirectory()
+        '''
+        Create a temporary directory to hold rserver's database, and create
+        the configuration file rserver uses to find the database.
+
+        https://docs.rstudio.com/ide/server-pro/latest/database.html
+        https://github.com/rstudio/rstudio/tree/v1.4.1103/src/cpp/server/db
+        '''
+        # use mkdtemp() so the directory and its contents don't vanish when
+        # we're out of scope
+        db_dir = tempfile.mkdtemp()
         # create the rserver database config
         db_conf = dedent("""
             provider=sqlite
             directory={directory}
-        """).format(directory=db_dir.name)
-        f = tempfile.NamedTemporaryFile(mode='w', delete=False)
+        """).format(directory=db_dir)
+        f = tempfile.NamedTemporaryFile(mode='w', delete=False, dir=db_dir)
         db_config_name = f.name
         f.write(db_conf)
         f.close()
@@ -55,20 +63,14 @@ def setup_rserver():
             '--www-verify-user-agent=0'
         ]
 
-        if os.environ.get('RSESSION_PROXY_DB_CONFIG', '0') != '0':
+        # Add additional options for RStudio >= 1.4.x. Since we cannot
+        # determine rserver's version from the executable, we must use
+        # explicit configuration. In this case the environment variable
+        # RSESSION_PROXY_RSTUDIO_1_4 must be set.
+        if os.environ.get('RSESSION_PROXY_RSTUDIO_1_4', False):
+            # base_url has a trailing slash
+            cmd.append('--www-root-path={base_url}rstudio/')
             cmd.append(f'--database-config-file={db_config()}')
-
-        # Tell rserver what path it is being served from.
-        # rserver's www-root-path option is present in RStudio >= 1.4. If this
-        # environment variable is set to rserver's default, /, we don't set the
-        # option. The value should be the name of our entry point which is
-        # usually /rstudio/, however since people can add custom entry points,
-        # we won't assume.
-        www_root_path = os.environ.get('RSESSION_PROXY_WWW_ROOT_PATH', '/')
-        if www_root_path != "/":
-            hub_service_prefix = os.environ.get('JUPYTERHUB_SERVICE_PREFIX', '')
-            root_path = pathlib.Path(hub_service_prefix + www_root_path)
-            cmd.append(f'--www-root-path={root_path}/')
 
         return cmd
 
