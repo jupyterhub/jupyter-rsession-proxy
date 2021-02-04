@@ -3,6 +3,8 @@ import os
 import pathlib
 import shutil
 import subprocess
+import tempfile
+from textwrap import dedent
 
 def get_rstudio_executable(prog):
     # Find prog in known locations
@@ -30,14 +32,31 @@ def setup_rserver():
     def _get_env(port):
         return dict(USER=getpass.getuser())
 
+    def db_config():
+        '''Create a temporary directory to hold rserver's database.'''
+        db_dir = tempfile.TemporaryDirectory()
+        # create the rserver database config
+        db_conf = dedent("""
+            provider=sqlite
+            directory={directory}
+        """).format(directory=db_dir.name)
+        f = tempfile.NamedTemporaryFile(mode='w', delete=False)
+        db_config_name = f.name
+        f.write(db_conf)
+        f.close()
+        return db_config_name
+
     def _get_cmd(port):
-        return [
+        cmd = [
             get_rstudio_executable('rserver'),
             '--auth-none=1',
             '--www-frame-origin=same',
             '--www-port=' + str(port),
             '--www-verify-user-agent=0'
         ]
+
+        if os.environ.get('RSESSION_PROXY_DB_CONFIG', '0') != '0':
+            cmd.append(f'--database-config-file={db_config()}')
 
         # Tell rserver what path it is being served from.
         # rserver's www-root-path option is present in RStudio >= 1.4. If this
