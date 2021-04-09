@@ -74,7 +74,7 @@ def setup_rserver():
 
         return cmd
 
-    return {
+    server_process = {
         'command': _get_cmd,
         'environment': _get_env,
         'launcher_entry': {
@@ -82,6 +82,9 @@ def setup_rserver():
             'icon_path': get_icon_path()
         }
     }
+    if os.environ.get('RSESSION_PROXY_RSTUDIO_1_4', False):
+        server_process['path_info'] = 'rstudio/auth-sign-in?appUrl=%2F'
+    return server_process
 
 def setup_rsession():
     def _get_env(port):
