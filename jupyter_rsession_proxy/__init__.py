@@ -79,7 +79,8 @@ def setup_rserver():
         'environment': _get_env,
         'launcher_entry': {
             'title': 'RStudio',
-            'icon_path': get_icon_path()
+            'icon_path': get_icon_path(),
+            'launcher_url': '/auth-sign-in'
         }
     }
 
