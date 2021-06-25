@@ -80,7 +80,7 @@ def setup_rserver():
         'launcher_entry': {
             'title': 'RStudio',
             'icon_path': get_icon_path(),
-            'launcher_url': '/auth-sign-in'
+            'launcher_url': '/auth-sign-in',
         }
     }
 
