@@ -15,7 +15,7 @@ def _jupyter_nbextension_paths():
     }]
 
 def _load_jupyter_server_extension(nbapp):
-    setup_handlers(nbapp.webapp)
+    setup_handlers(nbapp.web_app, ['localhost', '127.0.0.1'])
 
 # For backward compatibility
 load_jupyter_server_extension = _load_jupyter_server_extension
