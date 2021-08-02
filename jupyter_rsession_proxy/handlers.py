@@ -7,7 +7,6 @@ import tempfile
 from textwrap import dedent
 
 from jupyter_server.utils import url_path_join as ujoin
-
 from jupyter_server_proxy.handlers import SuperviseAndProxyHandler, AddSlashHandler
 
 def get_rstudio_executable(prog):
@@ -111,6 +110,19 @@ class RServerProxyHandler(SuperviseAndProxyHandler):
             cmd.append(f'--database-config-file={db_config()}')
 
         return cmd
+
+    async def http_get(self, path):
+        if not os.environ.get('RSESSION_PROXY_RSTUDIO_1_4', False) or \
+            "auth-sign-in" in path:
+            return await super().http_get(path)
+
+        cookie = self.request.headers.get('Cookie')
+        if cookie and 'user-id' in cookie:
+            return await super().http_get(path)
+        else:
+            auth_sign_in_url = f"{self.base_url}rstudio/auth-sign-in"
+            self.log.info(f"No user-id in cookie. redirect to {auth_sign_in_url}")
+            self.redirect(auth_sign_in_url)
 
 def setup_handlers(web_app):
     base_url = web_app.settings['base_url']
