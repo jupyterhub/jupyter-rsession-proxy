@@ -1,0 +1,5 @@
+{
+  "load_extensions": {
+     "jupyter_rsession_proxy/tree": true
+  }
+}
