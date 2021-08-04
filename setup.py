@@ -19,7 +19,7 @@ HERE = Path(__file__).parent.resolve()
 # The name of the project
 name = "jupyter_rsession_proxy"
 
-lab_path = HERE / name / "jupyterlab-rsession-proxy"
+lab_path = HERE / name / "labextension"
 
 # Representative files that should exist after a successful build
 jstargets = [
