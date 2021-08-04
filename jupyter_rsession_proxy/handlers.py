@@ -8,6 +8,7 @@ from textwrap import dedent
 
 from jupyter_server.utils import url_path_join as ujoin
 from jupyter_server_proxy.handlers import SuperviseAndProxyHandler, AddSlashHandler
+from jupyter_server_proxy.api import IconHandler
 
 def get_rstudio_executable(prog):
     # Find prog in known locations
@@ -25,6 +26,11 @@ def get_rstudio_executable(prog):
             return op
 
     raise FileNotFoundError(f'Could not find {prog} in PATH')
+
+def get_icon_path():
+    return os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), 'icons', 'rstudio.svg'
+    )
 
 def db_config():
     '''
@@ -152,7 +158,8 @@ def setup_handlers(web_app):
 
     handlers = [
         (ujoin(base_url, 'rstudio', r'(.*)'), RServerProxyHandler, dict(state={}, version_ge_1_4=version_ge_1_4)),
-        (ujoin(base_url, 'rstudio'), AddSlashHandler)
+        (ujoin(base_url, 'rstudio'), AddSlashHandler),
+        (ujoin(base_url, 'rsession-proxy/icon/(.*)'), IconHandler, dict(icons={'rstudio':get_icon_path()}))
     ]
 
     web_app.add_handlers('.*', handlers)
