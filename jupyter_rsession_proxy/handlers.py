@@ -48,6 +48,17 @@ def db_config():
     f.close()
     return db_config_name
 
+def detect_version():
+    '''
+    Detect version of rserver by running rsession. rserver does not have a
+    version flag. They are typically (always?) installed from the same
+    package.
+    '''
+    cmd = [get_rstudio_executable('rsession'), '--version']
+    output = subprocess.check_output(cmd)
+    version, rest = output.decode().split(',', 1)
+    return version
+
 class RSessionProxyHandler(SuperviseAndProxyHandler):
     '''Manage an RStudio rsession instance.'''
 
@@ -88,6 +99,10 @@ class RServerProxyHandler(SuperviseAndProxyHandler):
 
     name = 'RStudio'
 
+    def initialize(self, state, version_ge_1_4):
+        self.version_ge_1_4 = version_ge_1_4
+        super().initialize(state)
+
     def get_env(self):
         return dict(USER=getpass.getuser())
 
@@ -100,11 +115,8 @@ class RServerProxyHandler(SuperviseAndProxyHandler):
             '--www-verify-user-agent=0'
         ]
 
-        # Add additional options for RStudio >= 1.4.x. Since we cannot
-        # determine rserver's version from the executable, we must use
-        # explicit configuration. In this case the environment variable
-        # RSESSION_PROXY_RSTUDIO_1_4 must be set.
-        if os.environ.get('RSESSION_PROXY_RSTUDIO_1_4', False):
+        # Add additional options for RStudio >= 1.4.x.
+        if self.version_ge_1_4:
             # base_url has a trailing slash
             cmd.append(f'--www-root-path={self.base_url}rstudio/')
             cmd.append(f'--database-config-file={db_config()}')
@@ -112,8 +124,7 @@ class RServerProxyHandler(SuperviseAndProxyHandler):
         return cmd
 
     async def http_get(self, path):
-        if not os.environ.get('RSESSION_PROXY_RSTUDIO_1_4', False) or \
-            "auth-sign-in" in path:
+        if not self.version_ge_1_4 or "auth-sign-in" in path:
             return await super().http_get(path)
 
         cookie = self.request.headers.get('Cookie')
@@ -127,8 +138,20 @@ class RServerProxyHandler(SuperviseAndProxyHandler):
 def setup_handlers(web_app):
     base_url = web_app.settings['base_url']
 
+    # rstudio-server ~ 1.4 introduced the auth-sign-in and root-path issues.
+    # We try to detect the version, however the rsession version flag is
+    # only in rstudio server 1.4.1717 and later. We still let the admin
+    # inform us with an environment variable.'''
+    version_ge_1_4 = os.environ.get('RSESSION_PROXY_RSTUDIO_1_4', False)
+    try:
+        detect_version()
+    except:
+        pass
+    finally:
+        version_ge_1_4 = True
+
     handlers = [
-        (ujoin(base_url, 'rstudio', r'(.*)'), RServerProxyHandler, dict(state={})),
+        (ujoin(base_url, 'rstudio', r'(.*)'), RServerProxyHandler, dict(state={}, version_ge_1_4=version_ge_1_4)),
         (ujoin(base_url, 'rstudio'), AddSlashHandler)
     ]
 
