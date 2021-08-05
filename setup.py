@@ -102,7 +102,7 @@ setup_args = dict(
     data_files=[
         (
             "share/jupyter/nbextensions/jupyter_rsession_proxy",
-            ["jupyter_rsession_proxy/static/tree.js"]
+            ["jupyter_rsession_proxy/static/tree.js"],
         ),
         (
             "etc/jupyter/jupyter_notebook_config.d",
@@ -117,6 +117,9 @@ setup_args = dict(
             ["jupyter_rsession_proxy/etc/jupyter-rsession-proxy-nbextension.json"],
         ),
     ],
+    # Apparently it is sufficient for the icon to just be in MANIFEST.in, but
+    # the docs say it should be in package_data. It is not sufficient to be in
+    # package_data but not MANIFEST.in. ¯\_(ツ)_/¯
     package_data={
         'jupyter_rsession_proxy': ['icons/rstudio.svg', 'static/*'],
     },

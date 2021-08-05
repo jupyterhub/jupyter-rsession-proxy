@@ -1,1 +1,2 @@
 include LICENSE
+include jupyter_rsession_proxy/icons/rstudio.svg
