@@ -44,12 +44,12 @@ def db_config():
     # we're out of scope
     db_dir = tempfile.mkdtemp()
     # create the rserver database config
-    db_conf = dedent("""
+    db_conf = dedent(f"""
         provider=sqlite
-        directory={directory}
-    """).format(directory=db_dir)
-    f = tempfile.NamedTemporaryFile(mode='w', delete=False, dir=db_dir)
-    db_config_name = f.name
+        directory={db_dir}
+    """)
+    db_config_name = os.path.join(db_dir, "database.conf")
+    f = open(db_config_name, 'w')
     f.write(db_conf)
     f.close()
     return db_config_name
