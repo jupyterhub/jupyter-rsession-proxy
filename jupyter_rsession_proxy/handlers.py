@@ -25,7 +25,7 @@ def get_rstudio_executable(prog):
         if os.path.exists(op):
             return op
 
-    raise FileNotFoundError(f'Could not find {prog} in PATH')
+    raise FileNotFoundError(f'Could not find {prog} in $PATH or other common rstudio locations')
 
 def get_icon_path():
     return os.path.join(
