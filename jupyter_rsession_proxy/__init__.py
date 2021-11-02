@@ -28,6 +28,17 @@ def get_icon_path():
         os.path.dirname(os.path.abspath(__file__)), 'icons', 'rstudio.svg'
     )
 
+def detect_version():
+    '''
+    Detect version of rserver by running rsession. rserver does not have a
+    version flag. They are typically (always?) installed from the same
+    package.
+    '''
+    cmd = [get_rstudio_executable('rsession'), '--version']
+    output = subprocess.check_output(cmd)
+    version, rest = output.decode().split(',', 1)
+    return version
+
 def setup_rserver():
     def _get_env(port):
         return dict(USER=getpass.getuser())
