@@ -69,16 +69,24 @@ def setup_rserver():
         cmd = [
             get_rstudio_executable('rserver'),
             '--auth-none=1',
+            f'--server-user={getpass.getuser()}',
             '--www-frame-origin=same',
             '--www-port=' + str(port),
             '--www-verify-user-agent=0'
         ]
 
+        try:
+            detect_version()
+        except:
+            pass
+        finally:
+            version_ge_1_4 = True
+
         # Add additional options for RStudio >= 1.4.x. Since we cannot
         # determine rserver's version from the executable, we must use
         # explicit configuration. In this case the environment variable
         # RSESSION_PROXY_RSTUDIO_1_4 must be set.
-        if os.environ.get('RSESSION_PROXY_RSTUDIO_1_4', False):
+        if version_ge_1_4 or os.environ.get('RSESSION_PROXY_RSTUDIO_1_4', False):
             # base_url has a trailing slash
             cmd.append('--www-root-path={base_url}rstudio/')
             cmd.append(f'--database-config-file={db_config()}')
