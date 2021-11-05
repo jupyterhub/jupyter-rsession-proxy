@@ -6,6 +6,21 @@ import subprocess
 import tempfile
 from textwrap import dedent
 
+from tornado import httputil
+
+def patch_redirect(request, host, port, path, response):
+    '''Substitute a redirect to /auth-sign-in.'''
+    headers = response.headers.get_all()
+    newheaders = httputil.HTTPHeaders()
+    for header, v in headers:
+        if header == "Location" and v.startswith("/auth-sign-in"):
+            # Visit the correct page
+            newheaders.add(header, request.uri + v)
+        else:
+            newheaders.add(header, v)
+
+    return dict(headers=newheaders)
+
 def get_rstudio_executable(prog):
     # Find prog in known locations
     other_paths = [
@@ -27,17 +42,6 @@ def get_icon_path():
     return os.path.join(
         os.path.dirname(os.path.abspath(__file__)), 'icons', 'rstudio.svg'
     )
-
-def detect_version():
-    '''
-    Detect version of rserver by running rsession. rserver does not have a
-    version flag. They are typically (always?) installed from the same
-    package.
-    '''
-    cmd = [get_rstudio_executable('rsession'), '--version']
-    output = subprocess.check_output(cmd)
-    version, rest = output.decode().split(',', 1)
-    return version
 
 def setup_rserver():
     def _get_env(port):
@@ -72,24 +76,10 @@ def setup_rserver():
             f'--server-user={getpass.getuser()}',
             '--www-frame-origin=same',
             '--www-port=' + str(port),
-            '--www-verify-user-agent=0'
+            '--www-verify-user-agent=0',
+            '--www-root-path={base_url}rstudio/',
+            f'--database-config-file={db_config()}'
         ]
-
-        try:
-            detect_version()
-        except:
-            pass
-        finally:
-            version_ge_1_4 = True
-
-        # Add additional options for RStudio >= 1.4.x. Since we cannot
-        # determine rserver's version from the executable, we must use
-        # explicit configuration. In this case the environment variable
-        # RSESSION_PROXY_RSTUDIO_1_4 must be set.
-        if version_ge_1_4 or os.environ.get('RSESSION_PROXY_RSTUDIO_1_4', False):
-            # base_url has a trailing slash
-            cmd.append('--www-root-path={base_url}rstudio/')
-            cmd.append(f'--database-config-file={db_config()}')
 
         return cmd
 
@@ -99,10 +89,10 @@ def setup_rserver():
         'launcher_entry': {
             'title': 'RStudio',
             'icon_path': get_icon_path()
-        }
+        },
+        'rewrite_response': patch_redirect,
     }
-    if os.environ.get('RSESSION_PROXY_RSTUDIO_1_4', False):
-        server_process['launcher_entry']['path_info'] = 'rstudio/auth-sign-in?appUrl=%2F'
+
     return server_process
 
 def setup_rsession():
