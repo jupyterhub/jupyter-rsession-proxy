@@ -80,11 +80,17 @@ def setup_rserver():
 
         return cmd
 
-    return {
-        "command": _get_cmd,
-        "environment": _get_env,
-        "launcher_entry": {"title": "RStudio", "icon_path": get_icon_path()},
+    server_process = {
+        'command': _get_cmd,
+        'environment': _get_env,
+        'launcher_entry': {
+            'title': 'RStudio',
+            'icon_path': get_icon_path()
+        }
     }
+    if os.environ.get('RSESSION_PROXY_RSTUDIO_1_4', False):
+        server_process['launcher_entry']['path_info'] = 'rstudio/auth-sign-in?appUrl=%2F'
+    return server_process
 
 
 def setup_rsession():
