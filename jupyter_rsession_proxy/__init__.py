@@ -58,12 +58,12 @@ def setup_rserver():
     def _get_cmd(port):
         ntf = tempfile.NamedTemporaryFile()
         cmd = [
-            get_rstudio_executable("rserver"),
-            "--auth-none=1",
-            "--www-frame-origin=same",
-            "--www-port=" + str(port),
-            "--www-verify-user-agent=0",
-            "--secure-cookie-key-file=" + ntf.name,
+            get_rstudio_executable('rserver'),
+            '--auth-none=1',
+            '--www-frame-origin=same',
+            '--www-port=' + str(port),
+            '--www-verify-user-agent=0',
+            '--secure-cookie-key-file=' + ntf.name,
         ]
 
         # Add additional options for RStudio >= 1.4.x. Since we cannot
