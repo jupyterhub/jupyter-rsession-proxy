@@ -64,6 +64,7 @@ def setup_rserver():
             '--www-port=' + str(port),
             '--www-verify-user-agent=0',
             '--secure-cookie-key-file=' + ntf.name,
+            '--server-user=' + getpass.getuser(),
         ]
 
         # Add additional options for RStudio >= 1.4.x. Since we cannot
