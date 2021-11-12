@@ -6,6 +6,7 @@ import subprocess
 import tempfile
 from textwrap import dedent
 
+
 def get_rstudio_executable(prog):
     # Find prog in known locations
     other_paths = [
@@ -55,12 +56,15 @@ def setup_rserver():
         return db_config_name
 
     def _get_cmd(port):
+        ntf = tempfile.NamedTemporaryFile()
         cmd = [
             get_rstudio_executable('rserver'),
             '--auth-none=1',
             '--www-frame-origin=same',
             '--www-port=' + str(port),
-            '--www-verify-user-agent=0'
+            '--www-verify-user-agent=0',
+            '--secure-cookie-key-file=' + ntf.name,
+            '--server-user=' + getpass.getuser(),
         ]
 
         # Add additional options for RStudio >= 1.4.x. Since we cannot
