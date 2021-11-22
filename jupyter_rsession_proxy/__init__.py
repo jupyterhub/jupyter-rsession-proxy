@@ -65,16 +65,9 @@ def setup_rserver():
             '--www-verify-user-agent=0',
             '--secure-cookie-key-file=' + ntf.name,
             '--server-user=' + getpass.getuser(),
+            '--www-root-path={base_url}rstudio/',
+            f'--database-config-file={db_config()}'
         ]
-
-        # Add additional options for RStudio >= 1.4.x. Since we cannot
-        # determine rserver's version from the executable, we must use
-        # explicit configuration. In this case the environment variable
-        # RSESSION_PROXY_RSTUDIO_1_4 must be set.
-        if os.environ.get('RSESSION_PROXY_RSTUDIO_1_4', False):
-            # base_url has a trailing slash
-            cmd.append('--www-root-path={base_url}rstudio/')
-            cmd.append(f'--database-config-file={db_config()}')
 
         return cmd
 
@@ -86,8 +79,6 @@ def setup_rserver():
             'icon_path': get_icon_path()
         }
     }
-    if os.environ.get('RSESSION_PROXY_RSTUDIO_1_4', False):
-        server_process['launcher_entry']['path_info'] = 'rstudio/auth-sign-in?appUrl=%2F'
     return server_process
 
 def setup_rsession():
