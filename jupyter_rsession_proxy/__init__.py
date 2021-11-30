@@ -29,7 +29,7 @@ def get_icon_path():
         os.path.dirname(os.path.abspath(__file__)), 'icons', 'rstudio.svg'
     )
 
-def rewrite_auth(response, request, orig_response, host, port, path):
+def rewrite_auth(response, request):
     '''
        As of rstudio-server 1.4ish, it would send the client to /auth-sign-in
        rather than what the client sees as the full URL followed by
