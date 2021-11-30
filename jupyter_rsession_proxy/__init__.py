@@ -29,6 +29,18 @@ def get_icon_path():
         os.path.dirname(os.path.abspath(__file__)), 'icons', 'rstudio.svg'
     )
 
+def rewrite_auth(response, request):
+    '''
+       As of rstudio-server 1.4ish, it would send the client to /auth-sign-in
+       rather than what the client sees as the full URL followed by
+       /auth-sign-in. See rstudio/rstudio#8888. We rewrite the response by
+       sending the client to the right place.
+    '''
+    for header, v in response.headers.get_all():
+        if header == "Location" and v.startswith("/auth-sign-in"):
+            # Visit the correct page
+            response.headers[header] = request.uri + v
+
 def setup_rserver():
     def _get_env(port):
         return dict(USER=getpass.getuser())
@@ -65,29 +77,21 @@ def setup_rserver():
             '--www-verify-user-agent=0',
             '--secure-cookie-key-file=' + ntf.name,
             '--server-user=' + getpass.getuser(),
+            '--www-root-path={base_url}rstudio/',
+            f'--database-config-file={db_config()}'
         ]
-
-        # Add additional options for RStudio >= 1.4.x. Since we cannot
-        # determine rserver's version from the executable, we must use
-        # explicit configuration. In this case the environment variable
-        # RSESSION_PROXY_RSTUDIO_1_4 must be set.
-        if os.environ.get('RSESSION_PROXY_RSTUDIO_1_4', False):
-            # base_url has a trailing slash
-            cmd.append('--www-root-path={base_url}rstudio/')
-            cmd.append(f'--database-config-file={db_config()}')
 
         return cmd
 
     server_process = {
         'command': _get_cmd,
         'environment': _get_env,
+        'rewrite_response': rewrite_auth,
         'launcher_entry': {
             'title': 'RStudio',
             'icon_path': get_icon_path()
         }
     }
-    if os.environ.get('RSESSION_PROXY_RSTUDIO_1_4', False):
-        server_process['launcher_entry']['path_info'] = 'rstudio/auth-sign-in?appUrl=%2F'
     return server_process
 
 def setup_rsession():
