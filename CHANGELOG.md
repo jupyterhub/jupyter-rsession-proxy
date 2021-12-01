@@ -2,9 +2,9 @@
 
 ### 2.0 - 2021-12-01
 
-#### Breaking changes
+#### BREAKING CHANGES
 
-* Install a newer version of rstudio-server -- either a later 1.4 or a newer date-based release. If you are using an older versions of rstudio-server, please install jupyter-rsession-proxy <= 1.4. It is no longer necessary to set the RSESSION_PROXY_RSTUDIO_1_4 environment variable.
+* Install a newer version of rstudio-server -- either a later 1.4 or a newer date-based release. If you are using an older versions of rstudio-server, please install jupyter-rsession-proxy <= 1.4. It is no longer necessary to set the RSESSION_PROXY_RSTUDIO_1_4 environment variable for this version.
 
 #### Enhancements made
 
