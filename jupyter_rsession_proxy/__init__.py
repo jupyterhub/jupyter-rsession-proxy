@@ -5,6 +5,7 @@ import shutil
 import subprocess
 import tempfile
 from textwrap import dedent
+from urllib.parse import urlparse, urlunparse
 
 
 def get_rstudio_executable(prog):
@@ -39,7 +40,8 @@ def rewrite_auth(response, request):
     for header, v in response.headers.get_all():
         if header == "Location" and v.startswith("/auth-sign-in"):
             # Visit the correct page
-            response.headers[header] = request.uri + v
+            u = urlparse(request.uri)
+            response.headers[header] = urlunparse(u._replace(path=u.path+v))
 
 def setup_rserver():
     def _get_env(port):
