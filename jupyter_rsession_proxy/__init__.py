@@ -67,10 +67,11 @@ def setup_rserver():
         db_config_name = f.name
         f.write(db_conf)
         f.close()
-        return db_config_name
+        return db_config_name, db_dir
 
     def _get_cmd(port):
         ntf = tempfile.NamedTemporaryFile()
+        database_config_file, server_data_dir = db_config()
         cmd = [
             get_rstudio_executable('rserver'),
             '--auth-none=1',
@@ -80,7 +81,8 @@ def setup_rserver():
             '--secure-cookie-key-file=' + ntf.name,
             '--server-user=' + getpass.getuser(),
             '--www-root-path={base_url}rstudio/',
-            f'--database-config-file={db_config()}'
+            f'--database-config-file={database_config_file}',
+            f'--server-data-dir={server_data_dir}'
         ]
 
         return cmd
