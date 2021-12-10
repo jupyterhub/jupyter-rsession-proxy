@@ -69,6 +69,10 @@ def setup_rserver():
         f.close()
         return db_dir, db_config_name
 
+    def _support_arg(arg):
+        ret = subprocess.check_output([get_rstudio_executable('rserver'), '--help'])
+        return ret.decode().find(arg) != -1
+
     def _get_cmd(port):
         ntf = tempfile.NamedTemporaryFile()
         db_dir, db_cfg = db_config()
@@ -80,10 +84,15 @@ def setup_rserver():
             '--www-verify-user-agent=0',
             '--secure-cookie-key-file=' + ntf.name,
             '--server-user=' + getpass.getuser(),
-            '--www-root-path={base_url}rstudio/',
-            f'--server-data-dir={db_dir}',
-            f'--database-config-file={db_cfg}'
         ]
+        # Support at least v1.2.1335 and up
+
+        if _support_arg('www-root-path'):
+            cmd.append('--www-root-path={base_url}rstudio/')
+        if _support_arg('server-data-dir'):
+            cmd.append(f'--server-data-dir={db_dir}')
+        if _support_arg('database-config-file'):
+            cmd.append(f'--database-config-file={db_cfg}')
 
         return cmd
 
