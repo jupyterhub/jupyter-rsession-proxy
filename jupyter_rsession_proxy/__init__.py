@@ -57,7 +57,7 @@ def setup_rserver():
         '''
         # use mkdtemp() so the directory and its contents don't vanish when
         # we're out of scope
-        db_dir = tempfile.mkdtemp()
+        db_dir = tempfile.mkdtemp(dir=os.environ.get("SLURM_TMPDIR", "/tmp"))
         # create the rserver database config
         db_conf = dedent("""
             provider=sqlite
@@ -67,10 +67,11 @@ def setup_rserver():
         db_config_name = f.name
         f.write(db_conf)
         f.close()
-        return db_config_name
+        return db_dir, db_config_name
 
     def _get_cmd(port):
         ntf = tempfile.NamedTemporaryFile()
+        db_dir, db_cfg = db_config()
         cmd = [
             get_rstudio_executable('rserver'),
             '--auth-none=1',
@@ -80,7 +81,8 @@ def setup_rserver():
             '--secure-cookie-key-file=' + ntf.name,
             '--server-user=' + getpass.getuser(),
             '--www-root-path={base_url}rstudio/',
-            f'--database-config-file={db_config()}'
+            f'--server-data-dir={db_dir}',
+            f'--database-config-file={db_cfg}'
         ]
 
         return cmd
