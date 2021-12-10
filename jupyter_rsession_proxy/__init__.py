@@ -57,7 +57,7 @@ def setup_rserver():
         '''
         # use mkdtemp() so the directory and its contents don't vanish when
         # we're out of scope
-        db_dir = tempfile.mkdtemp(dir=os.environ.get("SLURM_TMPDIR", "/tmp"))
+        db_dir = tempfile.mkdtemp()
         # create the rserver database config
         db_conf = dedent("""
             provider=sqlite
