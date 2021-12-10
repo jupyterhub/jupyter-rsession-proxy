@@ -47,7 +47,7 @@ def setup_rserver():
     def _get_env(port):
         return dict(USER=getpass.getuser())
 
-    def db_config():
+    def db_config(db_dir):
         '''
         Create a temporary directory to hold rserver's database, and create
         the configuration file rserver uses to find the database.
@@ -55,9 +55,6 @@ def setup_rserver():
         https://docs.rstudio.com/ide/server-pro/latest/database.html
         https://github.com/rstudio/rstudio/tree/v1.4.1103/src/cpp/server/db
         '''
-        # use mkdtemp() so the directory and its contents don't vanish when
-        # we're out of scope
-        db_dir = tempfile.mkdtemp()
         # create the rserver database config
         db_conf = dedent("""
             provider=sqlite
@@ -71,7 +68,13 @@ def setup_rserver():
 
     def _get_cmd(port):
         ntf = tempfile.NamedTemporaryFile()
-        database_config_file, server_data_dir = db_config()
+
+        # use mkdtemp() so the directory and its contents don't vanish when
+        # we're out of scope
+        server_data_dir = tempfile.mkdtemp()
+
+        database_config_file = db_config(server_data_dir)
+
         cmd = [
             get_rstudio_executable('rserver'),
             '--auth-none=1',
