@@ -47,7 +47,7 @@ def setup_rserver():
     def _get_env(port):
         return dict(USER=getpass.getuser())
 
-    def db_config():
+    def db_config(db_dir):
         '''
         Create a temporary directory to hold rserver's database, and create
         the configuration file rserver uses to find the database.
@@ -55,9 +55,6 @@ def setup_rserver():
         https://docs.rstudio.com/ide/server-pro/latest/database.html
         https://github.com/rstudio/rstudio/tree/v1.4.1103/src/cpp/server/db
         '''
-        # use mkdtemp() so the directory and its contents don't vanish when
-        # we're out of scope
-        db_dir = tempfile.mkdtemp()
         # create the rserver database config
         db_conf = dedent("""
             provider=sqlite
@@ -69,8 +66,18 @@ def setup_rserver():
         f.close()
         return db_config_name
 
+    def _support_arg(arg):
+        ret = subprocess.check_output([get_rstudio_executable('rserver'), '--help'])
+        return ret.decode().find(arg) != -1
+
     def _get_cmd(port):
         ntf = tempfile.NamedTemporaryFile()
+
+        # use mkdtemp() so the directory and its contents don't vanish when
+        # we're out of scope
+        server_data_dir = tempfile.mkdtemp()
+        database_config_file = db_config(server_data_dir)
+
         cmd = [
             get_rstudio_executable('rserver'),
             '--auth-none=1',
@@ -79,9 +86,15 @@ def setup_rserver():
             '--www-verify-user-agent=0',
             '--secure-cookie-key-file=' + ntf.name,
             '--server-user=' + getpass.getuser(),
-            '--www-root-path={base_url}rstudio/',
-            f'--database-config-file={db_config()}'
         ]
+        # Support at least v1.2.1335 and up
+
+        if _support_arg('www-root-path'):
+            cmd.append('--www-root-path={base_url}rstudio/')
+        if _support_arg('server-data-dir'):
+            cmd.append(f'--server-data-dir={server_data_dir}')
+        if _support_arg('database-config-file'):
+            cmd.append(f'--database-config-file={database_config_file}')
 
         return cmd
 
