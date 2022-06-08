@@ -103,7 +103,7 @@ def setup_rserver():
 
     server_process = {
         'command': _get_cmd,
-        'timeout': _get_timeout,
+        'timeout': _get_timeout(),
         'environment': _get_env,
         'rewrite_response': rewrite_auth,
         'launcher_entry': {
@@ -149,7 +149,7 @@ def setup_rsession():
 
     return {
         'command': _get_cmd,
-        'timeout': _get_timeout,
+        'timeout': _get_timeout(),
         'environment': _get_env,
         'launcher_entry': {
             'title': 'RStudio',
