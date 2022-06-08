@@ -98,7 +98,7 @@ def setup_rserver():
 
         return cmd
 
-    def _get_timeout(default=10):
+    def _get_timeout(default=15):
         return os.getenv('RSERVER_TIMEOUT', default)
 
     server_process = {
@@ -144,7 +144,7 @@ def setup_rsession():
             '--www-port=' + str(port)
         ]
 
-    def _get_timeout(default=10):
+    def _get_timeout(default=15):
         return os.getenv('RSESSION_TIMEOUT', default)
 
     return {
