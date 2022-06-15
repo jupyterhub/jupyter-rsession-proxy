@@ -136,7 +136,7 @@ def setup_rsession():
             '--program-mode=server',
             '--log-stderr=1',
             '--session-timeout-minutes=0',
-            '--user-identity=' + getpass.getuser(),
+            '--user-identity=' + os.getenv("NB_USER", getpass.getuser()),
             '--www-port=' + str(port)
         ]
 
