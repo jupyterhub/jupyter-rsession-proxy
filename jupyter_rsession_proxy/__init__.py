@@ -85,7 +85,7 @@ def setup_rserver():
             '--www-port=' + str(port),
             '--www-verify-user-agent=0',
             '--secure-cookie-key-file=' + ntf.name,
-            '--server-user=' + getpass.getuser(),
+            '--server-user=' + os.getenv("NB_USER", getpass.getuser()),
         ]
         # Support at least v1.2.1335 and up
 
