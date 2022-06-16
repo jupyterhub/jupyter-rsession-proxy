@@ -4,6 +4,7 @@ import pathlib
 import shutil
 import subprocess
 import tempfile
+import pwd
 from textwrap import dedent
 from urllib.parse import urlparse, urlunparse
 
@@ -43,9 +44,16 @@ def rewrite_auth(response, request):
             u = urlparse(request.uri)
             response.headers[header] = urlunparse(u._replace(path=u.path+v))
 
+def get_system_user():
+    try:
+        user = pwd.getpwuid(os.getuid())[0]
+    except:
+        user = os.environ.get('NB_USER')
+    return(user)
+
 def setup_rserver():
     def _get_env(port):
-        return dict(USER=os.environ.get('NB_USER'))
+        return dict(USER=get_system_user())
 
     def db_config(db_dir):
         '''
@@ -85,7 +93,7 @@ def setup_rserver():
             '--www-port=' + str(port),
             '--www-verify-user-agent=0',
             '--secure-cookie-key-file=' + ntf.name,
-            '--server-user=' + os.environ.get('NB_USER'),
+            '--server-user=' + get_system_user(),
         ]
         # Support at least v1.2.1335 and up
 
@@ -136,7 +144,7 @@ def setup_rsession():
             '--program-mode=server',
             '--log-stderr=1',
             '--session-timeout-minutes=0',
-            '--user-identity=' + os.environ.get('NB_USER'),
+            '--user-identity=' + get_system_user(),
             '--www-port=' + str(port)
         ]
 
