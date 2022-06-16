@@ -48,7 +48,7 @@ def get_system_user():
     try:
         user = pwd.getpwuid(os.getuid())[0]
     except:
-        user = os.environ.get('NB_USER')
+        user = os.environ.get('NB_USER', getpass.getuser())
     return(user)
 
 def setup_rserver():
