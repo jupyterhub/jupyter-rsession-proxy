@@ -33,16 +33,16 @@ def get_icon_path():
 
 def rewrite_auth(response, request):
     '''
-       As of rstudio-server 1.4ish, it would send the client to /auth-sign-in
-       rather than what the client sees as the full URL followed by
-       /auth-sign-in. See rstudio/rstudio#8888. We rewrite the response by
-       sending the client to the right place.
+       As of rstudio-server 1.4ish, it would send the client
+       to a malformed root url when behind a reverse proxy.
+       We rewrite the response by sending the client to the right place.
     '''
+    correct_root_url = request.host
     for header, v in response.headers.get_all():
-        if header == "Location" and v.startswith("/auth-sign-in"):
+        if header == "Location" and correct_root_url not in v:
             # Visit the correct page
-            u = urlparse(request.uri)
-            response.headers[header] = urlunparse(u._replace(path=u.path+v))
+            u = urlparse(v)
+            response.headers[header] = urlunparse(u._replace(netloc=correct_root_url))
 
 def get_system_user():
     try:
