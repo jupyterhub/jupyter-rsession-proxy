@@ -1,0 +1,9 @@
+Metadata-Version: 2.1
+Name: jupyter-rsession-proxy
+Version: 2.2.1
+Summary: Jupyter extension to proxy RStudio
+Home-page: https://github.com/jupyterhub/jupyter-rsession-proxy
+Author: Ryan Lovett & Yuvi Panda
+Keywords: Jupyter
+Classifier: Framework :: Jupyter
+License-File: LICENSE

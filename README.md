@@ -11,6 +11,8 @@ Note that [RStudio Server Pro](https://rstudio.com/products/rstudio-server-pro) 
 
 This extension used to proxy Shiny server as well, however that functionality has been [separated](https://github.com/ryanlovett/jupyter-shiny-proxy).
 
+
+
 ## Installation
 
 ### Pre-reqs
@@ -40,3 +42,12 @@ conda install -c conda-forge jupyter-rsession-proxy
 ### Multiuser Considerations
 
 This extension launches an rstudio server process from the jupyter notebook server. This is fine in JupyterHub deployments where user servers are containerized since other users cannot connect to the rstudio server port. In non-containerized JupyterHub deployments, for example on multiuser systems running LocalSpawner or BatchSpawner, this not secure. Any user may connect to rstudio server and run arbitrary code.
+
+## Configuration with Environment Variables
+The following behavior can be configured with environment variables
+
+| Environment Variable | Effect | Default Value | Notes
+| RSERVER_FRAME_ORIGIN | The value of the `www-frame-origin` flag to rserver | `same` | |
+| RSERVER_TIMEOUT | Idle timeout flag to rserver in minutes | 15 | must be numeric and positive |
+| RSESSION_TIMEOUT | Idle timeout flag to rsession in minutes | 15 | must be numeric and positive |
+| NB_USER | Name of the Notebook user | `getuser.getpass()` || 
