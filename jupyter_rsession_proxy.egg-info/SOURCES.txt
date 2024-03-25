@@ -1,0 +1,13 @@
+LICENSE
+MANIFEST.in
+README.md
+setup.cfg
+setup.py
+jupyter_rsession_proxy/__init__.py
+jupyter_rsession_proxy.egg-info/PKG-INFO
+jupyter_rsession_proxy.egg-info/SOURCES.txt
+jupyter_rsession_proxy.egg-info/dependency_links.txt
+jupyter_rsession_proxy.egg-info/entry_points.txt
+jupyter_rsession_proxy.egg-info/requires.txt
+jupyter_rsession_proxy.egg-info/top_level.txt
+jupyter_rsession_proxy/icons/rstudio.svg
