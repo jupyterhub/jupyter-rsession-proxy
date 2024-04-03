@@ -8,37 +8,6 @@ import pwd
 from textwrap import dedent
 from urllib.parse import urlparse, urlunparse
 
-def get_env_value(env_var_name):
-    '''
-    Get the value of os.environ[env_var_name] if it is set, else return the default.
-    Currently, defaults provdied are:
-    RSERVER_FRAME_ORIGIN: 'same'
-    NB_USER: getpass.getuser(),
-    RSERVER_TIMEOUT: 15.0,
-    RSESSION_TIMEOUT: 15.0
-    Returns: the value of the environment variable if present; the default value
-        if not.  Returns None if the environment variable is not present and
-        env_var_name is not a key of the default dictionary.  Returns the default
-        if the variable is expected to be numeric and the provided value in the
-        environment is non-numeric
-    '''
-    env_var_defaults = {
-        'RSERVER_FRAME_ORIGIN': 'some',
-        'NB_USER': getpass.getuser(),
-        'RSERVER_TIMEOUT': 15.0,
-        'RSESSION_TIMEOUT': 15.0
-    }
-    numeric_values = {'RSERVER_TIMEOUT', 'RSESSION_TIMEOUT'}
-    default_value = env_var_defaults[env_var_name] if env_var_name in env_var_defaults else None
-    value = os.environ.get(env_var_name, default_value)
-    if env_var_name in numeric_values:
-        # Make sure we return a numeric value
-        try:
-            return float(value)
-        except Exception:
-            return default_value
-    else:
-        return value
 
 def get_rstudio_executable(prog):
     # Find prog in known locations
@@ -78,14 +47,12 @@ def get_system_user():
     try:
         user = pwd.getpwuid(os.getuid())[0]
     except:
-        user = get_env_value('NB_USER')
+        user = os.getenv('NB_USER', getpass.getuser())
     return(user)
 
 def setup_rserver():
     def _get_env(port):
         return dict(USER=get_system_user())
-    
-    
 
     def db_config(db_dir):
         '''
@@ -110,6 +77,12 @@ def setup_rserver():
         ret = subprocess.check_output([get_rstudio_executable('rserver'), '--help'])
         return ret.decode().find(arg) != -1
 
+    def _get_www_frame_origin(default="same"):
+        try:
+            return os.getenv('JUPYTER_RSESSION_PROXY_WWW_FRAME_ORIGIN', default)
+        except Exception:
+            return default
+
     def _get_cmd(port):
         ntf = tempfile.NamedTemporaryFile()
 
@@ -121,7 +94,7 @@ def setup_rserver():
         cmd = [
             get_rstudio_executable('rserver'),
             '--auth-none=1',
-            f'--www-frame-origin={get_env_value("RSERVER_FRAME_ORIGIN")}',
+            '--www-frame-origin=' + _get_www_frame_origin(),
             '--www-port=' + str(port),
             '--www-verify-user-agent=0',
             '--secure-cookie-key-file=' + ntf.name,
@@ -138,10 +111,15 @@ def setup_rserver():
 
         return cmd
 
+    def _get_timeout(default=15):
+        try:
+            return float(os.getenv('RSERVER_TIMEOUT', default))
+        except Exception:
+            return default
 
     server_process = {
         'command': _get_cmd,
-        'timeout': get_env_value('RSERVER_TIMEOUT'),
+        'timeout': _get_timeout(),
         'environment': _get_env,
         'rewrite_response': rewrite_netloc,
         'launcher_entry': {
@@ -190,7 +168,7 @@ def setup_rsession():
 
     return {
         'command': _get_cmd,
-        'timeout': get_env_value('RSESSION_TIMEOUT'),
+        'timeout': _get_timeout(),
         'environment': _get_env,
         'launcher_entry': {
             'title': 'RStudio',
