@@ -108,7 +108,6 @@ def setup_rserver():
             'database-config-file',
             'www-thread-pool-size',
             'www-socket',
-
         ])
         if supported_args['www-root-path']:
             cmd.append('--www-root-path={base_url}rstudio/')
@@ -116,6 +115,7 @@ def setup_rserver():
             cmd.append(f'--server-data-dir={server_data_dir}')
         if supported_args['database-config-file']:
             cmd.append(f'--database-config-file={database_config_file}')
+
         if supported_args['www-thread-pool-size']:
             try:
                 thread_pool_size = int(os.getenv('RSERVER_THREAD_POOL_SIZE', ""))
