@@ -51,7 +51,7 @@ def get_system_user():
     return(user)
 
 def setup_rserver():
-    def _get_env(port):
+    def _get_env(port, unix_socket):
         return dict(USER=get_system_user())
 
     def db_config(db_dir):
@@ -73,9 +73,10 @@ def setup_rserver():
         f.close()
         return db_config_name
 
-    def _support_arg(arg):
+    def _support_args(args):
         ret = subprocess.check_output([get_rstudio_executable('rserver'), '--help'])
-        return ret.decode().find(arg) != -1
+        help_output = ret.decode()
+        return {arg: (help_output.find(arg) != -1) for arg in args}
 
     def _get_www_frame_origin(default="same"):
         try:
@@ -83,7 +84,7 @@ def setup_rserver():
         except Exception:
             return default
 
-    def _get_cmd(port):
+    def _get_cmd(port, unix_socket):
         ntf = tempfile.NamedTemporaryFile()
 
         # use mkdtemp() so the directory and its contents don't vanish when
@@ -95,19 +96,41 @@ def setup_rserver():
             get_rstudio_executable('rserver'),
             '--auth-none=1',
             '--www-frame-origin=' + _get_www_frame_origin(),
-            '--www-port=' + str(port),
             '--www-verify-user-agent=0',
             '--secure-cookie-key-file=' + ntf.name,
             '--server-user=' + get_system_user(),
         ]
         # Support at least v1.2.1335 and up
 
-        if _support_arg('www-root-path'):
+        supported_args = _support_args([
+            'www-root-path',
+            'server-data-dir',
+            'database-config-file',
+            'www-thread-pool-size',
+            'www-socket',
+
+        ])
+        if supported_args['www-root-path']:
             cmd.append('--www-root-path={base_url}rstudio/')
-        if _support_arg('server-data-dir'):
+        if supported_args['server-data-dir']:
             cmd.append(f'--server-data-dir={server_data_dir}')
-        if _support_arg('database-config-file'):
+        if supported_args['database-config-file']:
             cmd.append(f'--database-config-file={database_config_file}')
+        if supported_args['www-thread-pool-size']:
+            try:
+                thread_pool_size = int(os.getenv('RSERVER_THREAD_POOL_SIZE', ""))
+                if thread_pool_size > 0:
+                    cmd.append('--www-thread-pool-size=' + str(thread_pool_size))
+            except:
+                pass
+
+        if unix_socket != "":
+            if supported_args['www-socket']:
+                cmd.append('--www-socket={unix_socket}')
+            else:
+                raise NotImplementedError(f'rstudio-server does not support requested socket connection')
+        else:
+            cmd.append('--www-port={port}')
 
         return cmd
 
@@ -127,6 +150,9 @@ def setup_rserver():
             'icon_path': get_icon_path()
         }
     }
+    if os.getenv('RSERVER_USE_SOCKET', "") != "":
+        server_process['unix_socket'] = True
+
     return server_process
 
 def setup_rsession():
