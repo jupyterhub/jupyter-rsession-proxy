@@ -46,7 +46,7 @@ def get_system_user():
     try:
         user = pwd.getpwuid(os.getuid())[0]
     except Exception:
-        user = os.environ.get('NB_USER', getpass.getuser())
+        user = os.getenv('NB_USER', getpass.getuser())
     return(user)
 
 def setup_rserver():
@@ -76,6 +76,12 @@ def setup_rserver():
         ret = subprocess.check_output([get_rstudio_executable('rserver'), '--help'])
         help_output = ret.decode()
         return {arg: (help_output.find(arg) != -1) for arg in args}
+
+    def _get_www_frame_origin(default="same"):
+        try:
+            return os.getenv('JUPYTER_RSESSION_PROXY_WWW_FRAME_ORIGIN', default)
+        except Exception:
+            return default
 
     def _get_www_frame_origin(default="same"):
         try:
@@ -126,7 +132,10 @@ def setup_rserver():
         return cmd
 
     def _get_timeout(default=15):
-        return os.getenv('RSERVER_TIMEOUT', default)
+        try:
+            return float(os.getenv('RSERVER_TIMEOUT', default))
+        except Exception:
+            return default
 
     server_process = {
         'command': _get_cmd,
@@ -172,7 +181,10 @@ def setup_rsession():
         ]
 
     def _get_timeout(default=15):
-        return os.getenv('RSESSION_TIMEOUT', default)
+        try:
+            return float(os.getenv('RSESSION_TIMEOUT', default))
+        except Exception:
+            return default
 
     return {
         'command': _get_cmd,
