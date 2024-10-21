@@ -2,6 +2,24 @@
 
 ## 2.2
 
+### 2.2.1 - 2024-03-13
+
+([full changelog](https://github.com/jupyterhub/jupyter-rsession-proxy/compare/v2.2.0...v2.2.1))
+
+#### Merged PRs
+
+- Update requirements for jupyter-server-proxy [#146](https://github.com/jupyterhub/jupyter-rsession-proxy/pull/146) ([@consideRatio](https://github.com/consideRatio), [@ryanlovett](https://github.com/ryanlovett))
+- Add new RStudio icon [#125](https://github.com/jupyterhub/jupyter-rsession-proxy/pull/125) ([@danilopeixoto](https://github.com/danilopeixoto), [@yuvipanda](https://github.com/yuvipanda))
+
+#### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/jupyterhub/jupyter-rsession-proxy/graphs/contributors?from=2023-06-23&to=2024-03-13&type=c))
+
+@benz0li ([activity](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3Abenz0li+updated%3A2023-06-23..2024-03-13&type=Issues)) | @danilopeixoto ([activity](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3Adanilopeixoto+updated%3A2023-06-23..2024-03-13&type=Issues)) | @eeholmes ([activity](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3Aeeholmes+updated%3A2023-06-23..2024-03-13&type=Issues)) | @ryanlovett ([activity](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3Aryanlovett+updated%3A2023-06-23..2024-03-13&type=Issues)) | @yuvipanda ([activity](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3Ayuvipanda+updated%3A2023-06-23..2024-03-13&type=Issues))
+
 ### 2.2.0 - 2023-06-12
 
 ([full changelog](https://github.com/jupyterhub/jupyter-rsession-proxy/compare/v2.1.0...8a87f3fbb21015927cfb30aec63af791fb0a19bc))
