@@ -6,7 +6,7 @@ import subprocess
 import tempfile
 import pwd
 from textwrap import dedent
-from urllib.parse import urlparse, urlunparse
+from urllib.parse import urlparse, urlunparse, urljoin
 
 
 def get_rstudio_executable(prog):
@@ -40,8 +40,13 @@ def rewrite_netloc(response, request):
     for header, v in response.headers.get_all():
         if header == "Location":
             u = urlparse(v)
+            redirect_path = u.path
+            if u.path.startswith("../"):
+                # R Help server sometimes responds with relative locations which 
+                # need to be handled if changing the host part of the header.
+                redirect_path = urljoin(request.path, u.path)
             if u.netloc != request.host:
-                response.headers[header] = urlunparse(u._replace(netloc=request.host))
+                response.headers[header] = urlunparse(u._replace(netloc=request.host, path=redirect_path))
 
 def get_system_user():
     try:
