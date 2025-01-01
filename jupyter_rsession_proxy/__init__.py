@@ -80,7 +80,7 @@ def setup_rserver():
 
     def _get_www_frame_origin(default="same"):
         try:
-            return os.getenv('JUPYTER_RSESSION_PROXY_WWW_FRAME_ORIGIN', default)
+            return os.getenv('RSERVER_WWW_FRAME_ORIGIN', default)
         except Exception:
             return default
 
@@ -136,7 +136,7 @@ def setup_rserver():
 
     def _get_timeout(default=15):
         try:
-            return float(os.getenv('JUPYTER_RSESSION_PROXY_TIMEOUT', default))
+            return float(os.getenv('RSERVER_TIMEOUT', default))
         except Exception:
             return default
 
@@ -150,9 +150,9 @@ def setup_rserver():
             'icon_path': get_icon_path()
         }
     }
-    if os.getenv('JUPYTER_RSESSION_PROXY_USE_SOCKET'):
+    if os.getenv('RSERVER_USE_SOCKET'):
         server_process['unix_socket'] = True
-
+RSERVER_TIMEOUT
     return server_process
 
 def setup_rsession():
