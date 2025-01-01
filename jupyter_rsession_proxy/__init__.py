@@ -134,8 +134,15 @@ def setup_rserver():
             'icon_path': get_icon_path()
         }
     }
-    if os.getenv('JUPYTER_RSESSION_PROXY_USE_SOCKET'):
-        server_process['unix_socket'] = True
+
+    use_socket = os.getenv('JUPYTER_RSESSION_PROXY_USE_SOCKET')
+    if use_socket is not None:
+        # If this env var is anything other than case insensitive 'no' or 'false',
+        # use unix sockets instead of tcp sockets. This allows us to default to
+        # using unix sockets by default in the future once this feature is better
+        # tested, and allow people to turn it off if needed.
+        if use_socket.casefold() not in ('no', 'false'):
+            server_process['unix_socket'] = True
 
     return server_process
 
