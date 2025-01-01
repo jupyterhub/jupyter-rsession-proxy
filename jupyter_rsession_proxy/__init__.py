@@ -51,7 +51,7 @@ def get_system_user():
     return(user)
 
 def setup_rserver():
-    def _get_env(port):
+    def _get_env(port, unix_socket):
         return dict(USER=get_system_user())
 
     def db_config(db_dir):
@@ -83,7 +83,7 @@ def setup_rserver():
         except Exception:
             return default
 
-    def _get_cmd(port):
+    def _get_cmd(port, unix_socket):
         ntf = tempfile.NamedTemporaryFile()
 
         # use mkdtemp() so the directory and its contents don't vanish when
@@ -95,7 +95,6 @@ def setup_rserver():
             get_rstudio_executable('rserver'),
             '--auth-none=1',
             '--www-frame-origin=' + _get_www_frame_origin(),
-            '--www-port=' + str(port),
             '--www-verify-user-agent=0',
             '--secure-cookie-key-file=' + ntf.name,
             '--server-user=' + get_system_user(),
@@ -108,6 +107,14 @@ def setup_rserver():
             cmd.append(f'--server-data-dir={server_data_dir}')
         if _support_arg('database-config-file'):
             cmd.append(f'--database-config-file={database_config_file}')
+
+        if unix_socket != "":
+            if _support_arg('www-socket'):
+                cmd.append('--www-socket={unix_socket}')
+            else:
+                raise NotImplementedError(f'rstudio-server does not support requested socket connection')
+        else:
+            cmd.append('--www-port={port}')
 
         return cmd
 
@@ -127,6 +134,9 @@ def setup_rserver():
             'icon_path': get_icon_path()
         }
     }
+    if os.getenv('RSERVER_USE_SOCKET'):
+        server_process['unix_socket'] = True
+
     return server_process
 
 def setup_rsession():
