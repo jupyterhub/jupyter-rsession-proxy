@@ -152,7 +152,7 @@ def setup_rserver():
     }
     if os.getenv('RSERVER_USE_SOCKET'):
         server_process['unix_socket'] = True
-RSERVER_TIMEOUT
+
     return server_process
 
 def setup_rsession():
