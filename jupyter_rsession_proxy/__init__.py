@@ -112,9 +112,9 @@ def setup_rserver():
         ])
         if supported_args['www-root-path']:
             cmd.append('--www-root-path={base_url}rstudio/')
-        if support_args['server-data-dir']:
+        if supported_args['server-data-dir']:
             cmd.append(f'--server-data-dir={server_data_dir}')
-        if support_args['database-config-file']:
+        if supported_args['database-config-file']:
             cmd.append(f'--database-config-file={database_config_file}')
 
         if supported_args['www-thread-pool-size']:
