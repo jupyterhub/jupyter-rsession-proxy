@@ -134,7 +134,7 @@ def setup_rserver():
             'icon_path': get_icon_path()
         }
     }
-    if os.getenv('RSERVER_USE_SOCKET'):
+    if os.getenv('JUPYTER_RSESSION_PROXY_USE_SOCKET'):
         server_process['unix_socket'] = True
 
     return server_process
