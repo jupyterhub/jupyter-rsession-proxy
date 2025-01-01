@@ -80,7 +80,7 @@ def setup_rserver():
 
     def _get_www_frame_origin(default="same"):
         try:
-            return os.getenv('RSERVER_WWW_FRAME_ORIGIN', default)
+            return os.getenv('JUPYTER_RSESSION_PROXY_WWW_FRAME_ORIGIN', default)
         except Exception:
             return default
 
