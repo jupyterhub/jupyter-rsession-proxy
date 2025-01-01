@@ -136,7 +136,7 @@ def setup_rserver():
 
     def _get_timeout(default=15):
         try:
-            return float(os.getenv('RSERVER_TIMEOUT', default))
+            return float(os.getenv('JUPYTER_RSESSION_PROXY_TIMEOUT', default))
         except Exception:
             return default
 
@@ -150,7 +150,7 @@ def setup_rserver():
             'icon_path': get_icon_path()
         }
     }
-    if os.getenv('RSERVER_USE_SOCKET', "") != "":
+    if os.getenv('JUPYTER_RSESSION_PROXY_USE_SOCKET'):
         server_process['unix_socket'] = True
 
     return server_process
