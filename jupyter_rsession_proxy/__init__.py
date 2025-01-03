@@ -51,7 +51,7 @@ def get_system_user():
     return(user)
 
 def setup_rserver():
-    def _get_env(port):
+    def _get_env(port, unix_socket):
         return dict(USER=get_system_user())
 
     def db_config(db_dir):
@@ -84,7 +84,7 @@ def setup_rserver():
         except Exception:
             return default
 
-    def _get_cmd(port):
+    def _get_cmd(port, unix_socket):
         ntf = tempfile.NamedTemporaryFile()
 
         # use mkdtemp() so the directory and its contents don't vanish when
@@ -96,7 +96,6 @@ def setup_rserver():
             get_rstudio_executable('rserver'),
             '--auth-none=1',
             '--www-frame-origin=' + _get_www_frame_origin(),
-            '--www-port=' + str(port),
             '--www-verify-user-agent=0',
             '--secure-cookie-key-file=' + ntf.name,
             '--server-user=' + get_system_user(),
@@ -125,9 +124,13 @@ def setup_rserver():
             except:
                 pass
 
-        #if unix_socket != "":
-        #    if supported_args['www-socket']:
-        #         cmd.append('--www-socket={unix_socket}')
+        if unix_socket != "":
+            if supported_args['www-socket']:
+                 cmd.append('--www-socket={unix_socket}')
+            else:
+                raise NotImplementedError(f'rstudio-server does not support requested socket connection')
+        else:
+            cmd.append('--www-port={port}')
 
         return cmd
 
@@ -147,6 +150,16 @@ def setup_rserver():
             'icon_path': get_icon_path()
         }
     }
+
+    use_socket = os.getenv('JUPYTER_RSESSION_PROXY_USE_SOCKET')
+    if use_socket is not None:
+        # If this env var is anything other than case insensitive 'no' or 'false',
+        # use unix sockets instead of tcp sockets. This allows us to default to
+        # using unix sockets by default in the future once this feature is better
+        # tested, and allow people to turn it off if needed.
+        if use_socket.casefold() not in ('no', 'false'):
+            server_process['unix_socket'] = True
+
     return server_process
 
 def setup_rsession():
