@@ -73,9 +73,10 @@ def setup_rserver():
         f.close()
         return db_config_name
 
-    def _support_arg(arg):
+    def _support_args(args):
         ret = subprocess.check_output([get_rstudio_executable('rserver'), '--help'])
-        return ret.decode().find(arg) != -1
+        help_output = ret.decode()
+        return {arg: (help_output.find(f"--{arg}") != -1) for arg in args}
 
     def _get_www_frame_origin(default="same"):
         try:
@@ -101,15 +102,33 @@ def setup_rserver():
         ]
         # Support at least v1.2.1335 and up
 
-        if _support_arg('www-root-path'):
+        supported_args = _support_args([
+            'www-root-path',
+            'server-data-dir',
+            'database-config-file',
+            'www-thread-pool-size',
+            'www-socket',
+        ])
+        if supported_args['www-root-path']:
             cmd.append('--www-root-path={base_url}rstudio/')
-        if _support_arg('server-data-dir'):
+        if supported_args['server-data-dir']:
             cmd.append(f'--server-data-dir={server_data_dir}')
-        if _support_arg('database-config-file'):
+        if supported_args['database-config-file']:
             cmd.append(f'--database-config-file={database_config_file}')
 
+        if supported_args['www-thread-pool-size']:
+            thread_pool_size_env = os.getenv('JUPYTER_RSESSION_PROXY_THREAD_POOL_SIZE', None)
+            try:
+                if thread_pool_size_env is not None:
+                    thread_pool_size = int(thread_pool_size_env)
+                    if thread_pool_size > 0:
+                        cmd.append('--www-thread-pool-size=' + str(thread_pool_size))
+            except ValueError:
+                print("Invalid value for JUPYTER_RSESSION_PROXY_THREAD_POOL_SIZE. Must be an integer.")
+                pass
+
         if unix_socket != "":
-            if _support_arg('www-socket'):
+            if supported_args['www-socket']:
                 cmd.append('--www-socket={unix_socket}')
             else:
                 raise NotImplementedError(f'rstudio-server does not support requested socket connection')
