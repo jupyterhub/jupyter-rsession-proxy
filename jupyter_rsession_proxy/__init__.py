@@ -76,7 +76,7 @@ def setup_rserver():
     def _support_args(args):
         ret = subprocess.check_output([get_rstudio_executable('rserver'), '--help'])
         help_output = ret.decode()
-        return {arg: (help_output.find(arg) != -1) for arg in args}
+        return {arg: (help_output.find(f"--{arg}") != -1) for arg in args}
 
     def _get_www_frame_origin(default="same"):
         try:
@@ -117,11 +117,14 @@ def setup_rserver():
             cmd.append(f'--database-config-file={database_config_file}')
 
         if supported_args['www-thread-pool-size']:
+            thread_pool_size_env = os.getenv('JUPYTER_RSESSION_PROXY_THREAD_POOL_SIZE', None)
             try:
-                thread_pool_size = int(os.getenv('JUPYTER_RSESSION_PROXY_THREAD_POOL_SIZE', ""))
-                if thread_pool_size > 0:
-                    cmd.append('--www-thread-pool-size=' + str(thread_pool_size))
-            except:
+                if thread_pool_size_env is not None:
+                    thread_pool_size = int(thread_pool_size_env)
+                    if thread_pool_size > 0:
+                        cmd.append('--www-thread-pool-size=' + str(thread_pool_size))
+            except ValueError:
+                print("Invalid value for JUPYTER_RSESSION_PROXY_THREAD_POOL_SIZE. Must be an integer.")
                 pass
 
         if unix_socket != "":
