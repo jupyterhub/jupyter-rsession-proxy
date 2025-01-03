@@ -118,7 +118,7 @@ def setup_rserver():
 
         if supported_args['www-thread-pool-size']:
             try:
-                thread_pool_size = int(os.getenv('RSERVER_THREAD_POOL_SIZE', ""))
+                thread_pool_size = int(os.getenv('JUPYTER_RSESSION_PROXY_THREAD_POOL_SIZE', ""))
                 if thread_pool_size > 0:
                     cmd.append('--www-thread-pool-size=' + str(thread_pool_size))
             except:
@@ -126,7 +126,7 @@ def setup_rserver():
 
         if unix_socket != "":
             if supported_args['www-socket']:
-                 cmd.append('--www-socket={unix_socket}')
+                cmd.append('--www-socket={unix_socket}')
             else:
                 raise NotImplementedError(f'rstudio-server does not support requested socket connection')
         else:
