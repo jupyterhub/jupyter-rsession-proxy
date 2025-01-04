@@ -10,7 +10,7 @@ setuptools.setup(
 	keywords=['Jupyter'],
 	classifiers=['Framework :: Jupyter'],
     install_requires=[
-        'jupyter-server-proxy>=3.2.3,!=4.0.0,!=4.1.0'
+        'jupyter-server-proxy>4.1.0'
     ],
     entry_points={
         'jupyter_serverproxy_servers': [
