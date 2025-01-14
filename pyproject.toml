@@ -7,7 +7,7 @@
 github_url = "https://github.com/jupyterhub/jupyter-rsession-proxy"
 
 [tool.tbump.version]
-current = "2.3.0"
+current = "2.3.1.dev"
 regex = '''
     (?P<major>\d+)
     \.
