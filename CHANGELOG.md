@@ -1,5 +1,33 @@
 # Changelog
 
+## 2.3
+
+### v2.3.0 - 2025-01-14
+
+([full changelog](https://github.com/jupyterhub/jupyter-rsession-proxy/compare/v2.2.1...972ca72623e43e3c8c2d99894a68d553fdd17015))
+
+#### Enhancements made
+
+- Support communicating with rstudio via unix socket instead of tcp socket [#159](https://github.com/jupyterhub/jupyter-rsession-proxy/pull/159) ([@jhgoebbert](https://github.com/jhgoebbert))
+- Made the www-frame-origin for rserver environment-configurable [#148](https://github.com/jupyterhub/jupyter-rsession-proxy/pull/148) ([@rickmcgeer](https://github.com/rickmcgeer))
+
+#### Maintenance and upkeep improvements
+
+- update install requirement (jupyter-server-proxy) for unix-socket-support [#162](https://github.com/jupyterhub/jupyter-rsession-proxy/pull/162) ([@jhgoebbert](https://github.com/jhgoebbert))
+- minimize overhead when checking the supported args by RStudio [#160](https://github.com/jupyterhub/jupyter-rsession-proxy/pull/160) ([@jhgoebbert](https://github.com/jhgoebbert))
+- Add and document release automation via github actions [#155](https://github.com/jupyterhub/jupyter-rsession-proxy/pull/155) ([@consideRatio](https://github.com/consideRatio))
+- Update requirements for jupyter-server-proxy [#146](https://github.com/jupyterhub/jupyter-rsession-proxy/pull/146) ([@consideRatio](https://github.com/consideRatio))
+
+#### Documentation improvements
+
+- Retroactively add v2.2.1 to changelog and fix heading levels etc [#154](https://github.com/jupyterhub/jupyter-rsession-proxy/pull/154) ([@consideRatio](https://github.com/consideRatio))
+
+#### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterhub/jupyter-rsession-proxy/graphs/contributors?from=2024-03-13&to=2025-01-14&type=c))
+
+[@benz0li](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3Abenz0li+updated%3A2024-03-13..2025-01-14&type=Issues) | [@consideRatio](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3AconsideRatio+updated%3A2024-03-13..2025-01-14&type=Issues) | [@jhgoebbert](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3Ajhgoebbert+updated%3A2024-03-13..2025-01-14&type=Issues) | [@rickmcgeer](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3Arickmcgeer+updated%3A2024-03-13..2025-01-14&type=Issues) | [@ryanlovett](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3Aryanlovett+updated%3A2024-03-13..2025-01-14&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3Awelcome+updated%3A2024-03-13..2025-01-14&type=Issues) | [@yuvipanda](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3Ayuvipanda+updated%3A2024-03-13..2025-01-14&type=Issues)
+
 ## 2.2
 
 ### 2.2.1 - 2024-03-13
