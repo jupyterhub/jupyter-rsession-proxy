@@ -16,7 +16,7 @@ This extension used to proxy Shiny server as well, however that functionality ha
 ### Pre-reqs
 
 #### Install rstudio
-Use conda `conda install rstudio` or [download](https://www.rstudio.com/products/rstudio/download-server/) the corresponding package for your platform 
+Use conda `conda install rstudio` or [download](https://www.rstudio.com/products/rstudio/download-server/) the corresponding package for your platform
 
 Note that rstudio server is needed to work with this extension.
 
@@ -44,8 +44,10 @@ This extension launches an rstudio server process from the jupyter notebook serv
 ## Configuration with Environment Variables
 The following behavior can be configured with environment variables
 
-| Environment Variable | Effect | Default Value | Notes
-| JUPYTER_RSESSION_PROXY_WWW_FRAME_ORIGIN | The value of the `www-frame-origin` flag to rserver | `same` | |
-| RSERVER_TIMEOUT | Idle timeout flag to rserver in minutes | 15 | must be numeric and positive |
-| RSESSION_TIMEOUT | Idle timeout flag to rsession in minutes | 15 | must be numeric and positive |
-| NB_USER | Fallback name of the Notebook user, if password database lookup fails | `getuser.getpass()` ||
+| Environment Variable                      | Effect                                                                | Default Value       | Notes                                                                     |
+|-------------------------------------------|-----------------------------------------------------------------------|---------------------|---------------------------------------------------------------------------|
+| `JUPYTER_RSESSION_PROXY_USE_SOCKET`       | Use unix sockets instead of TCP sockets                               | `no`                | Anything other than case insensitive `no` or `false` will use unix socket |
+| `JUPYTER_RSESSION_PROXY_WWW_FRAME_ORIGIN` | The value of the `www-frame-origin` flag to rserver                   | `same`              |                                                                           |
+| `RSERVER_TIMEOUT`                         | Idle timeout flag to rserver in minutes                               | `15`                | Must be numeric and positive                                              |
+| `RSESSION_TIMEOUT`                        | Idle timeout flag to rsession in minutes                              | `15`                | Must be numeric and positive                                              |
+| `NB_USER`                                 | Fallback name of the Notebook user, if password database lookup fails | `getuser.getpass()` |                                                                           |
