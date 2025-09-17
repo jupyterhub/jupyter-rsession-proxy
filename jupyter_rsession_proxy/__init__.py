@@ -1,6 +1,5 @@
 import getpass
 import os
-import pathlib
 import shutil
 import subprocess
 import tempfile
@@ -42,7 +41,7 @@ def rewrite_netloc(response, request):
             u = urlparse(v)
             redirect_path = u.path
             if u.path.startswith("../"):
-                # R Help server sometimes responds with relative locations which 
+                # R Help server sometimes responds with relative locations which
                 # need to be handled if changing the host part of the header.
                 redirect_path = urljoin(request.path, u.path)
             if u.netloc != request.host:
@@ -132,11 +131,8 @@ def setup_rserver():
                 print("Invalid value for JUPYTER_RSESSION_PROXY_THREAD_POOL_SIZE. Must be an integer.")
                 pass
 
-        if unix_socket != "":
-            if supported_args['www-socket']:
-                cmd.append('--www-socket={unix_socket}')
-            else:
-                raise NotImplementedError(f'rstudio-server does not support requested socket connection')
+        if unix_socket and supported_args['www-socket']:
+            cmd.append('--www-socket={unix_socket}')
         else:
             cmd.append('--www-port={port}')
 
@@ -159,14 +155,15 @@ def setup_rserver():
         }
     }
 
-    use_socket = os.getenv('JUPYTER_RSESSION_PROXY_USE_SOCKET')
-    if use_socket is not None:
-        # If this env var is anything other than case insensitive 'no' or 'false',
-        # use unix sockets instead of tcp sockets. This allows us to default to
-        # using unix sockets by default in the future once this feature is better
-        # tested, and allow people to turn it off if needed.
-        if use_socket.casefold() not in ('no', 'false'):
-            server_process['unix_socket'] = True
+    # The environment variable serves to explicitly disable Unix sockets, which are the default
+    use_unix_socket = True
+    disable_socket = os.getenv('JUPYTER_RSESSION_PROXY_USE_SOCKET')
+    if disable_socket is not None:
+        if disable_socket.casefold() in ('no', 'false'):
+            use_unix_socket = False
+
+    if use_unix_socket:
+        server_process['unix_socket'] = True
 
     return server_process
 
