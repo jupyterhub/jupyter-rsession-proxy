@@ -1,10 +1,43 @@
 # Changelog
 
+## 2.4
+
+### v2.4.0 - 2025-11-18
+
+([full changelog](https://github.com/jupyterhub/jupyter-rsession-proxy/compare/v2.3.0...v2.4.0))
+
+#### Enhancements made
+
+- Make unix socket default [#166](https://github.com/jupyterhub/jupyter-rsession-proxy/pull/166) ([@jrdnbradford](https://github.com/jrdnbradford), [@yuvipanda](https://github.com/yuvipanda))
+
+#### Bugs fixed
+
+- Add handling for relative paths in Location headers [#157](https://github.com/jupyterhub/jupyter-rsession-proxy/pull/157) ([@paulkm](https://github.com/paulkm), [@ryanlovett](https://github.com/ryanlovett))
+
+#### Documentation improvements
+
+- Add `JUPYTER_RSESSION_PROXY_USE_SOCKET` docs [#165](https://github.com/jupyterhub/jupyter-rsession-proxy/pull/165) ([@jrdnbradford](https://github.com/jrdnbradford), [@consideRatio](https://github.com/consideRatio))
+- fix: correct broken link in contributing [#163](https://github.com/jupyterhub/jupyter-rsession-proxy/pull/163) ([@agoose77](https://github.com/agoose77), [@sgibson91](https://github.com/sgibson91))
+
+#### Continuous integration improvements
+
+- Bump actions/checkout from 4 to 5 [#168](https://github.com/jupyterhub/jupyter-rsession-proxy/pull/168) ([@consideRatio](https://github.com/consideRatio))
+- Bump actions/setup-python from 5 to 6 [#167](https://github.com/jupyterhub/jupyter-rsession-proxy/pull/167) ([@consideRatio](https://github.com/consideRatio))
+
+#### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/jupyterhub/jupyter-rsession-proxy/graphs/contributors?from=2025-01-14&to=2025-11-18&type=c))
+
+@agoose77 ([activity](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3Aagoose77+updated%3A2025-01-14..2025-11-18&type=Issues)) | @consideRatio ([activity](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3AconsideRatio+updated%3A2025-01-14..2025-11-18&type=Issues)) | @jrdnbradford ([activity](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3Ajrdnbradford+updated%3A2025-01-14..2025-11-18&type=Issues)) | @paulkm ([activity](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3Apaulkm+updated%3A2025-01-14..2025-11-18&type=Issues)) | @ryanlovett ([activity](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3Aryanlovett+updated%3A2025-01-14..2025-11-18&type=Issues)) | @sgibson91 ([activity](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3Asgibson91+updated%3A2025-01-14..2025-11-18&type=Issues)) | @yuvipanda ([activity](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3Ayuvipanda+updated%3A2025-01-14..2025-11-18&type=Issues))
+
 ## 2.3
 
 ### v2.3.0 - 2025-01-14
 
-([full changelog](https://github.com/jupyterhub/jupyter-rsession-proxy/compare/v2.2.1...972ca72623e43e3c8c2d99894a68d553fdd17015))
+([full changelog](https://github.com/jupyterhub/jupyter-rsession-proxy/compare/v2.2.1...v2.3.0))
 
 #### Enhancements made
 
