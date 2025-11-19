@@ -39,8 +39,8 @@ conda install -c conda-forge jupyter-rsession-proxy
 
 ### Multiuser Considerations
 
-This extension launches an RStudio server process from the Jupyter notebook server. This is fine in JupyterHub deployments where user servers are containerized since other users cannot connect to the RStudio server port. In non-containerized JupyterHub deployments, for example on multiuser systems running LocalSpawner or BatchSpawner, this not secure. Any user may connect to Rstudio server and run arbitrary code.
-
+This extension launches an RStudio server process from the Jupyter notebook server. This is fine in JupyterHub deployments where user servers are containerized since other users cannot connect to the RStudio server port. In non-containerized JupyterHub deployments, for example on multiuser systems running LocalSpawner or BatchSpawner, *this is not secure if Rstudio server is listening on a TCP port*. In that case, any user may connect to Rstudio server and run arbitrary code. *However, if Rstudio is listening on a unix port, the socket will be protected using unix file permissions*. Therefore, we recommend keeping the default configuration, which uses a unix socket and not a TCP port.
+ 
 ## Configuration with Environment Variables
 The following behavior can be configured with environment variables:
 
