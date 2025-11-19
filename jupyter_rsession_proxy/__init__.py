@@ -54,7 +54,7 @@ def get_system_user():
         user = os.getenv('NB_USER', getpass.getuser())
     return(user)
 
-def setup_rserver(r_path="", prefix="rstudio"):
+def setup_rserver(r_path="", prefix="rstudio", launcher_title="RStudio"):
     def _get_env(port, unix_socket):
         return dict(USER=get_system_user())
 
@@ -153,7 +153,7 @@ def setup_rserver(r_path="", prefix="rstudio"):
         'environment': _get_env,
         'rewrite_response': rewrite_netloc,
         'launcher_entry': {
-            'title': 'RStudio',
+            'title': launcher_title,
             'icon_path': get_icon_path()
         }
     }
