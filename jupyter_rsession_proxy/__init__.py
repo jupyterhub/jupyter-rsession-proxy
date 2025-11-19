@@ -54,7 +54,7 @@ def get_system_user():
         user = os.getenv('NB_USER', getpass.getuser())
     return(user)
 
-def setup_rserver():
+def setup_rserver(r_path="", prefix="rstudio"):
     def _get_env(port, unix_socket):
         return dict(USER=get_system_user())
 
@@ -112,13 +112,16 @@ def setup_rserver():
             'database-config-file',
             'www-thread-pool-size',
             'www-socket',
+            'rsession-which-r'
         ])
         if supported_args['www-root-path']:
-            cmd.append('--www-root-path={base_url}rstudio/')
+            cmd.append('--www-root-path={base_url}' + f'{prefix}/')
         if supported_args['server-data-dir']:
             cmd.append(f'--server-data-dir={server_data_dir}')
         if supported_args['database-config-file']:
             cmd.append(f'--database-config-file={database_config_file}')
+        if supported_args['rsession-which-r'] and r_path:
+            cmd.append(f'--rsession-which-r={r_path}')
 
         if supported_args['www-thread-pool-size']:
             thread_pool_size_env = os.getenv('JUPYTER_RSESSION_PROXY_THREAD_POOL_SIZE', None)
