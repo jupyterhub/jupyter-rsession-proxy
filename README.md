@@ -31,6 +31,25 @@ Or via `conda`:
 conda install -c conda-forge jupyter-rsession-proxy
 ```
 
+### Traitlets configuration
+
+You may also manually configure this extension inside a [traitlets](https://traitlets.readthedocs.io/en/stable/) configuration file for [jupyter-server-proxy](https://jupyter-server-proxy.readthedocs.io/en/latest/server-process.html#specifying-config-via-traitlets). This also allows you to configure multiple different RStudio applications, for instance using different versions of R:
+
+```python
+from jupyter_rsession_proxy import setup_rserver
+# update the jupyter-server-proxy config by adding two RStudio servers
+c.ServerProxy.servers.update({
+  "rstudio1": setup_rserver(prefix="rstudio1", r_path="/usr/bin/R", launcher_title="RStudio (default R)"),
+  "rstudio2": setup_rserver(prefix="rstudio2", r_path="/opt/miniconda3/bin/R", launcher_title="RStudio (other R)")
+})
+# note that the prefix and the dict key are the same for each server (both "rstudio1" and "rstudio2", respectively).
+# this is necessary for everything to work correctly:
+# if prefix and dict key differ, then the user would not be redirected to the right URL.
+```
+
+Note: in this scenario, `jupyter-rsession-proxy` must still first be installed (into the same environment as Jupyter) as described [above](#install-jupyter-rsession-proxy).
+
+
 ## Example
 
 [rocker/binder](https://hub.docker.com/r/rocker/binder) contains an example installation which you can run on binder.
