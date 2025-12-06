@@ -95,7 +95,7 @@ def setup_rserver():
         # we're out of scope
         # we create the server_data_dir inside another temp dir,
         # as rserver seems to insists on changing its permissions to 777.
-        # wrapping it in the first tempdir insists the contents of server_data_dir stay secure.
+        # wrapping it in the first tempdir inside the contents of server_data_dir stay secure.
         server_data_dir = tempfile.mkdtemp(dir=tempfile.mkdtemp())
         database_config_file = db_config(server_data_dir)
 
