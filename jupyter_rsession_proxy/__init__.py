@@ -118,7 +118,7 @@ def setup_rserver(r_path="", prefix="rstudio", launcher_title="RStudio"):
             'rsession-which-r'
         ])
         if supported_args['www-root-path']:
-            cmd.append('--www-root-path={base_url}' + f'/{prefix}/')
+            cmd.append('--www-root-path={base_url}' + f'{prefix}/')
         if supported_args['server-data-dir']:
             cmd.append(f'--server-data-dir={server_data_dir}')
         if supported_args['database-config-file']:
