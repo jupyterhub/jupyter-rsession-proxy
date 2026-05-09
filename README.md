@@ -1,6 +1,6 @@
 # jupyter-rsession-proxy
 
-[![TravisCI build status](https://img.shields.io/travis/com/jupyterhub/jupyter-rsession-proxy?logo=travis)](https://travis-ci.com/jupyterhub/jupyter-rsession-proxy)
+[![Test](https://github.com/jrdnbradford/jupyter-rsession-proxy/actions/workflows/test.yaml/badge.svg)](https://github.com/jrdnbradford/jupyter-rsession-proxy/actions/workflows/test.yaml)
 
 **jupyter-rsession-proxy** provides Jupyter server and notebook extensions to proxy RStudio.
 
@@ -59,7 +59,7 @@ Note: in this scenario, `jupyter-rsession-proxy` must still first be installed (
 ### Multiuser Considerations
 
 This extension launches an RStudio server process from the Jupyter notebook server. This is fine in JupyterHub deployments where user servers are containerized since other users cannot connect to the RStudio server port. In non-containerized JupyterHub deployments, for example on multiuser systems running LocalSpawner or BatchSpawner, *this is not secure if Rstudio server is listening on a TCP port*. In that case, any user may connect to Rstudio server and run arbitrary code. *However, if Rstudio is listening on a unix port, the socket will be protected using unix file permissions*. Therefore, we recommend keeping the default configuration, which uses a unix socket and not a TCP port.
- 
+
 ## Configuration with Environment Variables
 The following behavior can be configured with environment variables:
 
