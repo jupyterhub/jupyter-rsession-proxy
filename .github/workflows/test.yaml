@@ -4,6 +4,14 @@ name: Test
 
 on:
   pull_request:
+    branches:
+      - main
+    paths:
+      - "**.py"
+      - "pyproject.toml"
+  push:
+    branches:
+      - main
     paths:
       - "**.py"
       - "pyproject.toml"
