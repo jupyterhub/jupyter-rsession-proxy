@@ -111,6 +111,7 @@ jobs:
           c.JupyterHub.authenticator_class = 'dummy'
           c.DummyAuthenticator.password = 'password'
           c.JupyterHub.spawner_class = 'jupyterhub.spawner.LocalProcessSpawner'
+          c.Spawner.cmd = ['/opt/conda/bin/jupyterhub-singleuser']
           c.Authenticator.admin_users = {'admin'}
           c.JupyterHub.api_tokens = {'ci-admin-token': 'admin'}
           EOF
@@ -131,7 +132,7 @@ jobs:
           timeout 120 bash -c '
             until curl -sf -H "Authorization: token '"$ADMIN_TOKEN"'" \
               http://localhost:8000/hub/api/users/testuser \
-              | jq -e ".servers.default.ready == true" > /dev/null 2>&1; do
+              | jq -e '.servers[""].ready == true' > /dev/null 2>&1; do
               sleep 2
             done'
 
