@@ -60,11 +60,14 @@ jobs:
             http://localhost:8888/rstudio/)
           echo "HTTP response code: $HTTP_CODE"
 
-          if [[ "$HTTP_CODE" != 2* ]]; then
-            echo "--- Response body ---"
-            cat /tmp/rstudio_response.html
-            exit 1
-          fi
+          case "$HTTP_CODE" in
+            2*) ;;
+            *)
+              echo "--- Response body ---"
+              cat /tmp/rstudio_response.html
+              exit 1
+              ;;
+          esac
 
           grep -qi "rstudio" /tmp/rstudio_response.html \
             || { echo "Response does not contain RStudio content"; cat /tmp/rstudio_response.html; exit 1; }
@@ -156,11 +159,14 @@ jobs:
             http://localhost:8000/user/testuser/rstudio/)
           echo "HTTP response code: $HTTP_CODE"
 
-          if [[ "$HTTP_CODE" != 2* ]]; then
-            echo "--- Response body ---"
-            cat /tmp/hub_rstudio_response.html
-            exit 1
-          fi
+          case "$HTTP_CODE" in
+            2*) ;;
+            *)
+              echo "--- Response body ---"
+              cat /tmp/hub_rstudio_response.html
+              exit 1
+              ;;
+          esac
 
           grep -qi "rstudio" /tmp/hub_rstudio_response.html \
             || { echo "Response does not contain RStudio content"; cat /tmp/hub_rstudio_response.html; exit 1; }
