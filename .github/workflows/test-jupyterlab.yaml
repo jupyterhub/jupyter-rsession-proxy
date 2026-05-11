@@ -1,6 +1,5 @@
-# This GitHub workflow installs RStudio Server alongside JupyterLab
-# and verifies the /rstudio/ proxy endpoint is reachable.
-name: Test
+# Installs RStudio Server alongside JupyterLab and verifies the /rstudio/ proxy endpoint is reachable.
+name: Test JupyterLab
 
 on:
   pull_request:
@@ -18,7 +17,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-proxy:
+  test-jupyterlab:
     runs-on: ubuntu-latest
     container:
       image: quay.io/jupyter/r-notebook:latest
@@ -57,14 +56,17 @@ jobs:
             -c /tmp/rstudio_cookies.txt -b /tmp/rstudio_cookies.txt \
             -L --max-redirs 5 \
             -w "%{http_code}" -o /tmp/rstudio_response.html \
-            http://localhost:8888/rstudio/)
+            http://localhost:8888/rstudio/) || true
           echo "HTTP response code: $HTTP_CODE"
 
-          if [[ "$HTTP_CODE" != 2* ]]; then
-            echo "--- Response body ---"
-            cat /tmp/rstudio_response.html
-            exit 1
-          fi
+          case "$HTTP_CODE" in
+            2*) ;;
+            *)
+              echo "--- Response body ---"
+              cat /tmp/rstudio_response.html 2>/dev/null || echo "(no response body captured)"
+              exit 1
+              ;;
+          esac
 
           grep -qi "rstudio" /tmp/rstudio_response.html \
             || { echo "Response does not contain RStudio content"; cat /tmp/rstudio_response.html; exit 1; }
