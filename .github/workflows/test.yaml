@@ -129,12 +129,16 @@ jobs:
           curl -sf -X POST -H "Authorization: token $ADMIN_TOKEN" $BASE/users/testuser
           curl -sf -X POST -H "Authorization: token $ADMIN_TOKEN" $BASE/users/testuser/server
 
-          timeout 120 bash -c '
-            until curl -sf -H "Authorization: token '"$ADMIN_TOKEN"'" \
+          i=0
+          while [ $i -lt 60 ]; do
+            READY=$(curl -sf -H "Authorization: token $ADMIN_TOKEN" \
               http://localhost:8000/hub/api/users/testuser \
-              | jq -e '.servers[""].ready == true' > /dev/null 2>&1; do
-              sleep 2
-            done'
+              | jq -r '.servers[""].ready // false')
+            [ "$READY" = "true" ] && break
+            i=$((i + 1))
+            sleep 2
+          done
+          [ "$READY" = "true" ] || { echo "Timed out waiting for user server to start"; exit 1; }
 
           USER_TOKEN=$(curl -sf -X POST \
             -H "Authorization: token $ADMIN_TOKEN" \
