@@ -2,6 +2,23 @@
 
 ## 2.5
 
+### v2.5.1 - 2026-05-11
+
+([full changelog](https://github.com/jupyterhub/jupyter-rsession-proxy/compare/v2.5.0...5754f90cf53db72c0b4dd2e032152cd0265edede))
+
+#### Bugs fixed
+
+- Fix root path regression [#179](https://github.com/jupyterhub/jupyter-rsession-proxy/pull/179) ([@jrdnbradford](https://github.com/jrdnbradford), [@ryanlovett](https://github.com/ryanlovett))
+
+#### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/use/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/jupyterhub/jupyter-rsession-proxy/graphs/contributors?from=2026-04-28&to=2026-05-11&type=c))
+
+@jrdnbradford ([activity](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3Ajrdnbradford+updated%3A2026-04-28..2026-05-11&type=Issues)) | @ryanlovett ([activity](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3Aryanlovett+updated%3A2026-04-28..2026-05-11&type=Issues))
+
 ### v2.5.0 - 2026-04-28
 
 ([full changelog](https://github.com/jupyterhub/jupyter-rsession-proxy/compare/ff8e103044c7bedf304243846f43f5d1b0e7179f...341bfa93f8f572c64ef89b998b9bd3db0e700d8e))
