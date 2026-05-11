@@ -69,3 +69,94 @@ jobs:
           grep -qi "rstudio" /tmp/rstudio_response.html \
             || { echo "Response does not contain RStudio content"; cat /tmp/rstudio_response.html; exit 1; }
           echo "RStudio is reachable and served IDE content"
+
+  test-jupyterhub:
+    runs-on: ubuntu-latest
+    container:
+      image: quay.io/jupyter/r-notebook:latest
+      options: --user root
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Node.js and configurable-http-proxy
+        run: |
+          apt-get update -qq
+          apt-get install -y --no-install-recommends nodejs npm
+          npm install -g configurable-http-proxy
+
+      - name: Install package and JupyterHub
+        run: pip install -e . jupyterhub
+
+      - name: Install RStudio Server
+        run: |
+          apt-get update -qq
+          apt-get install -y --no-install-recommends gdebi-core jq wget
+
+          RELEASE=$(. /etc/os-release && echo "$VERSION_CODENAME")
+          RSTUDIO_URL=$(wget --output-document - --output-file /dev/null \
+            'https://www.rstudio.com/wp-content/downloads.json' \
+            | jq --raw-output --arg RELEASE "$RELEASE" \
+              '.rstudio.open_source.stable.server.installer[$RELEASE].url')
+
+          wget --no-verbose --output-document rstudio-server-latest-amd64.deb "$RSTUDIO_URL"
+          gdebi --non-interactive rstudio-server-latest-amd64.deb
+          rm rstudio-server-latest-amd64.deb
+
+      - name: Create system user and JupyterHub config
+        run: |
+          useradd -m testuser
+
+          cat > /tmp/jupyterhub_config.py << 'EOF'
+          c.JupyterHub.authenticator_class = 'dummy'
+          c.DummyAuthenticator.password = 'password'
+          c.JupyterHub.spawner_class = 'local'
+          c.Authenticator.admin_users = {'admin'}
+          c.JupyterHub.api_tokens = {'ci-admin-token': 'admin'}
+          EOF
+
+      - name: Start JupyterHub
+        run: |
+          jupyterhub --config /tmp/jupyterhub_config.py &
+          timeout 60 bash -c 'until curl -sf http://localhost:8000/hub/api/; do sleep 1; done'
+
+      - name: Spawn user server via Hub API
+        run: |
+          ADMIN_TOKEN=ci-admin-token
+          BASE=http://localhost:8000/hub/api
+
+          curl -sf -X POST -H "Authorization: token $ADMIN_TOKEN" $BASE/users/testuser
+          curl -sf -X POST -H "Authorization: token $ADMIN_TOKEN" $BASE/users/testuser/server
+
+          timeout 120 bash -c '
+            until curl -sf -H "Authorization: token '"$ADMIN_TOKEN"'" \
+              http://localhost:8000/hub/api/users/testuser \
+              | jq -e ".servers.default.ready == true" > /dev/null 2>&1; do
+              sleep 2
+            done'
+
+          USER_TOKEN=$(curl -sf -X POST \
+            -H "Authorization: token $ADMIN_TOKEN" \
+            http://localhost:8000/hub/api/users/testuser/tokens \
+            | jq -r '.token')
+          echo "USER_TOKEN=$USER_TOKEN" >> "$GITHUB_ENV"
+
+      - name: Test RStudio through JupyterHub proxy
+        run: |
+          HTTP_CODE=$(curl -s --max-time 60 \
+            -H "Authorization: token $USER_TOKEN" \
+            -c /tmp/hub_cookies.txt -b /tmp/hub_cookies.txt \
+            -L --max-redirs 5 \
+            -w "%{http_code}" -o /tmp/hub_rstudio_response.html \
+            http://localhost:8000/user/testuser/rstudio/)
+          echo "HTTP response code: $HTTP_CODE"
+
+          if [[ "$HTTP_CODE" != 2* ]]; then
+            echo "--- Response body ---"
+            cat /tmp/hub_rstudio_response.html
+            exit 1
+          fi
+
+          grep -qi "rstudio" /tmp/hub_rstudio_response.html \
+            || { echo "Response does not contain RStudio content"; cat /tmp/hub_rstudio_response.html; exit 1; }
+          echo "RStudio is reachable through JupyterHub and served IDE content"
