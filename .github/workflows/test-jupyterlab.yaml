@@ -56,7 +56,7 @@ jobs:
             -c /tmp/rstudio_cookies.txt -b /tmp/rstudio_cookies.txt \
             -L --max-redirs 5 \
             -w "%{http_code}" -o /tmp/rstudio_response.html \
-            http://localhost:8888/rstudio/)
+            http://localhost:8888/rstudio/) || true
           echo "HTTP response code: $HTTP_CODE"
 
           case "$HTTP_CODE" in
