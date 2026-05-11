@@ -110,7 +110,7 @@ jobs:
           cat > /tmp/jupyterhub_config.py << 'EOF'
           c.JupyterHub.authenticator_class = 'dummy'
           c.DummyAuthenticator.password = 'password'
-          c.JupyterHub.spawner_class = 'local'
+          c.JupyterHub.spawner_class = 'jupyterhub.spawner.LocalProcessSpawner'
           c.Authenticator.admin_users = {'admin'}
           c.JupyterHub.api_tokens = {'ci-admin-token': 'admin'}
           EOF
