@@ -1,6 +1,6 @@
 # jupyter-rsession-proxy
 
-[![Test](https://github.com/jrdnbradford/jupyter-rsession-proxy/actions/workflows/test.yaml/badge.svg)](https://github.com/jrdnbradford/jupyter-rsession-proxy/actions/workflows/test.yaml)
+[![Test](https://github.com/jupyterhub/jupyter-rsession-proxy/actions/workflows/test.yaml/badge.svg)](https://github.com/jupyterhub/jupyter-rsession-proxy/actions/workflows/test.yaml)
 
 **jupyter-rsession-proxy** provides Jupyter server and notebook extensions to proxy RStudio.
 

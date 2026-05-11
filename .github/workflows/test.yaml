@@ -60,7 +60,7 @@ jobs:
             http://localhost:8888/rstudio/)
           echo "HTTP response code: $HTTP_CODE"
 
-          if [ "${HTTP_CODE:-0}" -lt 200 ] || [ "${HTTP_CODE:-0}" -ge 400 ]; then
+          if [[ "$HTTP_CODE" != 2* ]]; then
             echo "--- Response body ---"
             cat /tmp/rstudio_response.html
             exit 1
