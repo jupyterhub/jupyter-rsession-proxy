@@ -1,0 +1,73 @@
+# Installs RStudio Server alongside JupyterLab and verifies the /rstudio/ proxy endpoint is reachable.
+name: Test JupyterLab
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "**.py"
+      - "pyproject.toml"
+  push:
+    branches:
+      - main
+    paths:
+      - "**.py"
+      - "pyproject.toml"
+  workflow_dispatch:
+
+jobs:
+  test-jupyterlab:
+    runs-on: ubuntu-latest
+    container:
+      image: quay.io/jupyter/r-notebook:latest
+      options: --user root
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install package
+        run: pip install -e .
+
+      - name: Install RStudio Server
+        run: |
+          apt-get update -qq
+          apt-get install -y --no-install-recommends gdebi-core jq wget
+
+          RELEASE=$(. /etc/os-release && echo "$VERSION_CODENAME")
+          RSTUDIO_URL=$(wget --output-document - --output-file /dev/null \
+            'https://www.rstudio.com/wp-content/downloads.json' \
+            | jq --raw-output --arg RELEASE "$RELEASE" \
+              '.rstudio.open_source.stable.server.installer[$RELEASE].url')
+
+          wget --no-verbose --output-document rstudio-server-latest-amd64.deb "$RSTUDIO_URL"
+          gdebi --non-interactive rstudio-server-latest-amd64.deb
+          rm rstudio-server-latest-amd64.deb
+
+      - name: Start JupyterLab
+        run: |
+          jupyter lab --no-browser --ServerApp.token='' --ServerApp.password='' --allow-root &
+          timeout 60 bash -c 'until curl -sf http://localhost:8888/api; do sleep 1; done'
+
+      - name: Test Proxy
+        run: |
+          # Use a cookie jar so curl accumulates auth cookies across redirects.
+          HTTP_CODE=$(curl -s --max-time 60 \
+            -c /tmp/rstudio_cookies.txt -b /tmp/rstudio_cookies.txt \
+            -L --max-redirs 5 \
+            -w "%{http_code}" -o /tmp/rstudio_response.html \
+            http://localhost:8888/rstudio/)
+          echo "HTTP response code: $HTTP_CODE"
+
+          case "$HTTP_CODE" in
+            2*) ;;
+            *)
+              echo "--- Response body ---"
+              cat /tmp/rstudio_response.html
+              exit 1
+              ;;
+          esac
+
+          grep -qi "rstudio" /tmp/rstudio_response.html \
+            || { echo "Response does not contain RStudio content"; cat /tmp/rstudio_response.html; exit 1; }
+          echo "RStudio is reachable and served IDE content"
