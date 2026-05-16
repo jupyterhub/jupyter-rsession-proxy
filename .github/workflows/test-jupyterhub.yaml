@@ -36,19 +36,7 @@ jobs:
         run: pip install -e . jupyterhub
 
       - name: Install RStudio Server
-        run: |
-          apt-get update -qq
-          apt-get install -y --no-install-recommends gdebi-core jq wget
-
-          RELEASE=$(. /etc/os-release && echo "$VERSION_CODENAME")
-          RSTUDIO_URL=$(wget --output-document - --output-file /dev/null \
-            'https://www.rstudio.com/wp-content/downloads.json' \
-            | jq --raw-output --arg RELEASE "$RELEASE" \
-              '.rstudio.open_source.stable.server.installer[$RELEASE].url')
-
-          wget --no-verbose --output-document rstudio-server-latest-amd64.deb "$RSTUDIO_URL"
-          gdebi --non-interactive rstudio-server-latest-amd64.deb
-          rm rstudio-server-latest-amd64.deb
+        run: conda install rstudio
 
       - name: Create system user and JupyterHub config
         run: |
