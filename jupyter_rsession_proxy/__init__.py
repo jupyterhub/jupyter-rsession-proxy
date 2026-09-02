@@ -1,7 +1,6 @@
 import getpass
 import os
 import pwd
-import re
 import shutil
 import subprocess
 import tempfile
@@ -172,7 +171,9 @@ def setup_rserver(r_path="", prefix="rstudio", launcher_title="RStudio"):
         'exclude_last_activity_patterns': [
             # exclude rstudio's get_events endpoint from activity,
             # which stays active during idle connections
-            re.compile(".*/rstudio/events/get_events$"),
+            ".*/rstudio/events/get_events$",
+            ".*/rstudio/rpc/auth_status$",
+            ".*/rstudio/rstudio/auth-update-credentials$",
         ],
         'launcher_entry': {
             'title': launcher_title,
