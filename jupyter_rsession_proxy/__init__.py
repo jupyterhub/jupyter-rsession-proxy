@@ -168,6 +168,13 @@ def setup_rserver(r_path="", prefix="rstudio", launcher_title="RStudio"):
         'timeout': _get_timeout(),
         'environment': _get_env,
         'rewrite_response': rewrite_netloc,
+        'exclude_last_activity_patterns': [
+            # exclude rstudio's get_events endpoint from activity,
+            # which stays active during idle connections
+            ".*/rstudio/events/get_events$",
+            ".*/rstudio/rpc/auth_status$",
+            ".*/rstudio/rstudio/auth-update-credentials$",
+        ],
         'launcher_entry': {
             'title': launcher_title,
             'icon_path': get_icon_path()
