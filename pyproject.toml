@@ -28,6 +28,9 @@ dependencies = [
 Source = "https://github.com/jupyterhub/jupyter-rsession-proxy"
 Tracker = "https://github.com/jupyterhub/jupyter-rsession-proxy/issues"
 
+[project.entry-points.jupyter_serverproxy_servers]
+ rstudio = "jupyter_rsession_proxy:setup_rserver"
+
 [tool.hatch.build.targets.wheel]
 packages = ["jupyter_rsession_proxy"]
 
