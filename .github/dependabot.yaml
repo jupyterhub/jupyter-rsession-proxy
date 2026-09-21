@@ -12,5 +12,10 @@ updates:
     labels: [ci]
     schedule:
       interval: monthly
-      time: "05:00"
-      timezone: Etc/UTC
+    groups:
+      # group official actions updates
+      actions:
+        patterns:
+          - "actions/*"
+    cooldown:
+      default-days: 7
