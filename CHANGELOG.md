@@ -1,5 +1,33 @@
 # Changelog
 
+## 2.6
+
+### v2.6.0 - 2026-10-24
+
+([full changelog](https://github.com/jupyterhub/jupyter-rsession-proxy/compare/v2.5.1...2bc193994d6167f356c6878afe09b1c923b01575))
+
+This release requires jupyter-server-proxy 4.6.0 or later.
+
+#### Bugs fixed
+
+- Exclude get_events from last_activity tracking [#189](https://github.com/jupyterhub/jupyter-rsession-proxy/pull/189) ([@minrk](https://github.com/minrk), [@shaneknapp](https://github.com/shaneknapp))
+- Create a user-writable session-rpc-key file [#185](https://github.com/jupyterhub/jupyter-rsession-proxy/pull/185) ([@ryanlovett](https://github.com/ryanlovett))
+
+#### Continuous integration improvements
+
+- Add proxy tests [#180](https://github.com/jupyterhub/jupyter-rsession-proxy/pull/180) ([@jrdnbradford](https://github.com/jrdnbradford), [@benz0li](https://github.com/benz0li), [@ryanlovett](https://github.com/ryanlovett))
+- Bump actions/setup-python from 6 to 7 [#188](https://github.com/jupyterhub/jupyter-rsession-proxy/pull/188) ([@minrk](https://github.com/minrk))
+- Bump actions/checkout from 6 to 7 [#186](https://github.com/jupyterhub/jupyter-rsession-proxy/pull/186) ([@minrk](https://github.com/minrk))
+
+#### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/use/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/jupyterhub/jupyter-rsession-proxy/graphs/contributors?from=2026-05-12&to=2026-09-22&type=c))
+
+@benz0li ([activity](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3Abenz0li+updated%3A2026-05-12..2026-09-22&type=Issues)) | @jrdnbradford ([activity](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3Ajrdnbradford+updated%3A2026-05-12..2026-09-22&type=Issues)) | @minrk ([activity](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3Aminrk+updated%3A2026-05-12..2026-09-22&type=Issues)) | @ryanlovett ([activity](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3Aryanlovett+updated%3A2026-05-12..2026-09-22&type=Issues)) | @shaneknapp ([activity](https://github.com/search?q=repo%3Ajupyterhub%2Fjupyter-rsession-proxy+involves%3Ashaneknapp+updated%3A2026-05-12..2026-09-22&type=Issues))
+
 ## 2.5
 
 ### v2.5.1 - 2026-05-11
