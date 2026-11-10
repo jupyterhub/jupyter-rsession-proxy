@@ -1,3 +1,40 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = [
+    "hatchling >=1.18.0",
+]
+
+[project]
+name = "jupyter-rsession-proxy"
+version = "2.6.0.dev"
+description = "Jupyter extension to proxy RStudio"
+keywords = ["jupyter"]
+authors = [
+  { name = "Ryan Lovett", email = "rylo@berkeley.edu" },
+  { name = "Yuvi Panda", email = "yuvipanda@gmail.com" },
+  { name = "Jupyter Development Team", email = "jupyter@googlegroups.com" },
+]
+readme = "README.md"
+license = "BSD-3-Clause"
+requires-python = ">=3.10"
+classifiers = [
+    "Framework :: Jupyter",
+]
+dependencies = [
+    "jupyter-server-proxy >=4.6.0",
+]
+
+[project.urls]
+Source = "https://github.com/jupyterhub/jupyter-rsession-proxy"
+Tracker = "https://github.com/jupyterhub/jupyter-rsession-proxy/issues"
+
+[project.entry-points.jupyter_serverproxy_servers]
+ rstudio = "jupyter_rsession_proxy:setup_rserver"
+
+[tool.hatch.build.targets.wheel]
+packages = ["jupyter_rsession_proxy"]
+
+
 # tbump is used to simplify and standardize the release process when updating
 # the version, making a git commit and tag, and pushing changes.
 #
@@ -24,4 +61,4 @@ message_template = "Bump to v{new_version}"
 tag_template = "v{new_version}"
 
 [[tool.tbump.file]]
-src = "setup.py"
+src = "pyproject.toml"
